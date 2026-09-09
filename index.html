@@ -46,6 +46,12 @@
     display:flex;
     flex-direction:column;
     z-index:20;
+    transition:width .22s ease, transform .22s ease;
+    overflow:hidden;
+  }
+  .sidebar > *{
+    width:262px; /* keep inner content from reflowing while the sidebar animates to 0 */
+    min-width:262px;
   }
   .brand{
     padding:22px 22px 16px 22px;
@@ -631,7 +637,7 @@
 
   /* Collapsible / responsive navbar */
   .navbar-toggle{
-    display:none;
+    display:inline-flex;
     align-items:center;
     justify-content:center;
     width:36px; height:36px;
@@ -655,19 +661,28 @@
   }
   .sidebar-backdrop.show{display:block;}
 
+  /* Desktop: collapse the sidebar to a slim rail instead of an overlay drawer */
+  @media (min-width:901px){
+    .main{transition:margin-left .22s ease;}
+    .sidebar.collapsed{
+      width:0;
+      min-width:0;
+    }
+    .main.sidebar-collapsed{margin-left:0;}
+  }
+
   @media (max-width:900px){
     .sidebar{
       position:fixed;
       top:0; bottom:0; left:0;
       width:270px;
       transform:translateX(-100%);
-      transition:transform .22s ease;
       z-index:50;
       box-shadow:2px 0 24px rgba(0,0,0,0.18);
     }
+    .sidebar > *{width:270px; min-width:270px;}
     .sidebar.open{transform:translateX(0);}
     .main{margin-left:0;}
-    .navbar-toggle{display:inline-flex;}
     .content{padding:28px 20px 90px 20px;}
     header.topbar{padding:14px 20px;}
     .concept-grid{grid-template-columns:1fr;}
@@ -676,7 +691,7 @@
 </head>
 <body>
 
-<div class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
+<div class="sidebar-backdrop" onclick="closeMobileDrawer()"></div>
 
 <aside class="sidebar">
   <div class="brand">
@@ -4820,7 +4835,7 @@ function showPage(id){
 }
 navitems.forEach(n => n.addEventListener("click", () => {
   showPage(n.dataset.page);
-  toggleSidebar(false); // close the drawer on mobile after picking a page
+  if (isMobileNav()) closeMobileDrawer(); // close the drawer on mobile after picking a page
 }));
 
 // Guided Exercises / Challenge Mode toggle (Fundamentals & Intermediate)
@@ -4845,13 +4860,29 @@ document.querySelectorAll(".challenge-item input[type='checkbox']").forEach(cb =
   });
 });
 
-// Collapsible responsive sidebar (mobile / narrow viewports)
-function toggleSidebar(force){
+// Collapsible / expandable navbar -- works both as a mobile overlay drawer
+// (sidebar slides over the content, with a backdrop) and, at desktop widths,
+// as an inline collapse that pushes the content flush left.
+function isMobileNav(){
+  return window.matchMedia("(max-width:900px)").matches;
+}
+function closeMobileDrawer(){
+  document.querySelector(".sidebar").classList.remove("open");
+  document.querySelector(".sidebar-backdrop").classList.remove("show");
+}
+function toggleSidebar(){
   const sidebar = document.querySelector(".sidebar");
+  const main = document.querySelector(".main");
   const backdrop = document.querySelector(".sidebar-backdrop");
-  const open = force !== undefined ? force : !sidebar.classList.contains("open");
-  sidebar.classList.toggle("open", open);
-  backdrop.classList.toggle("show", open);
+  if (isMobileNav()) {
+    const open = !sidebar.classList.contains("open");
+    sidebar.classList.toggle("open", open);
+    backdrop.classList.toggle("show", open);
+  } else {
+    const collapsed = !sidebar.classList.contains("collapsed");
+    sidebar.classList.toggle("collapsed", collapsed);
+    main.classList.toggle("sidebar-collapsed", collapsed);
+  }
 }
 
 showPage("overview");
