@@ -573,13 +573,110 @@
   }
   footer.sitefoot a{color:#7688A6; text-decoration:none;}
 
+  /* Guided / Challenge mode toggle */
+  .mode-toggle{
+    display:inline-flex;
+    background:#EEF1F6;
+    border-radius:100px;
+    padding:4px;
+    margin:6px 0 22px 0;
+  }
+  .mode-btn{
+    border:none;
+    background:transparent;
+    padding:8px 18px;
+    border-radius:100px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--muted);
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .mode-btn.active{background:var(--navy); color:#fff;}
+  .mode-panel{display:none;}
+  .mode-panel.active{display:block;}
+
+  .challenge-list{list-style:none; padding:0; margin:0;}
+  .challenge-item{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:13px 16px;
+    margin-bottom:9px;
+  }
+  .challenge-item input[type="checkbox"]{
+    margin-top:3px;
+    width:16px; height:16px;
+    accent-color:var(--navy);
+    cursor:pointer;
+    flex:0 0 auto;
+  }
+  .challenge-item label{
+    font-size:14px;
+    line-height:1.55;
+    cursor:pointer;
+    color:#333B48;
+  }
+  .challenge-num{
+    font-family:"Cascadia Code","Consolas",monospace;
+    color:var(--muted);
+    margin-right:4px;
+    font-size:12.5px;
+  }
+  .challenge-item.done{background:#F6F7FA; border-color:var(--line);}
+  .challenge-item.done label{text-decoration:line-through; color:var(--muted);}
+
+  /* Collapsible / responsive navbar */
+  .navbar-toggle{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    width:36px; height:36px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--card);
+    cursor:pointer;
+    margin-right:12px;
+    font-size:16px;
+    flex:0 0 auto;
+    color:var(--ink);
+  }
+  .navbar-toggle:hover{background:#F1F2F5;}
+  .topbar-inner{display:flex; align-items:center;}
+  .sidebar-backdrop{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(10,14,26,0.45);
+    z-index:40;
+  }
+  .sidebar-backdrop.show{display:block;}
+
   @media (max-width:900px){
-    .sidebar{position:relative; width:100%; flex:0 0 auto;}
+    .sidebar{
+      position:fixed;
+      top:0; bottom:0; left:0;
+      width:270px;
+      transform:translateX(-100%);
+      transition:transform .22s ease;
+      z-index:50;
+      box-shadow:2px 0 24px rgba(0,0,0,0.18);
+    }
+    .sidebar.open{transform:translateX(0);}
     .main{margin-left:0;}
+    .navbar-toggle{display:inline-flex;}
+    .content{padding:28px 20px 90px 20px;}
+    header.topbar{padding:14px 20px;}
+    .concept-grid{grid-template-columns:1fr;}
   }
 </style>
 </head>
 <body>
+
+<div class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
 
 <aside class="sidebar">
   <div class="brand">
@@ -613,7 +710,10 @@
 
 <div class="main">
   <header class="topbar">
-    <h2>Let's Learn DAX<span class="pill">Power BI · Data Modelling · DAX</span></h2>
+    <div class="topbar-inner">
+      <button class="navbar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">&#9776;</button>
+      <h2>Let's Learn DAX<span class="pill">Power BI · Data Modelling · DAX</span></h2>
+    </div>
   </header>
 
   <div class="content">
@@ -1403,6 +1503,144 @@
     <section class="page" id="page-fundamentals">
       <h1 class="page-title">1 · Fundamentals</h1>
       <p class="page-lede">Calculated columns, calculated tables, and a wide first pass across DAX's aggregation, text, rounding, and date functions — the row-context-vs-filter-context distinction that everything else in DAX rests on.</p>
+      <div class="mode-toggle" data-tier="fundamentals">
+        <button class="mode-btn active" data-mode="guided">Guided Exercises</button>
+        <button class="mode-btn" data-mode="challenge">Challenge Mode</button>
+      </div>
+      <div class="mode-panel" id="fundamentals-challenge">
+        <div class="callout warn">
+          <strong>No hints, no solutions</strong>
+          These 25 questions only give you the business question — figure out the measure, column, or filter yourself using what you now know about the dataset and model. Check the number off once you're confident in your answer.
+        </div>
+        <div class="challenge-list">
+          
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c1">
+            <label for="fundamentals-c1"><span class="challenge-num">1.</span> How many products are in the “Wearables” category?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c2">
+            <label for="fundamentals-c2"><span class="challenge-num">2.</span> What is the total quantity of items sold across all completed orders?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c3">
+            <label for="fundamentals-c3"><span class="challenge-num">3.</span> Which brand appears most frequently in the Products table?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c4">
+            <label for="fundamentals-c4"><span class="challenge-num">4.</span> What is the average list price of products in the “Computing” category?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c5">
+            <label for="fundamentals-c5"><span class="challenge-num">5.</span> How many stores are classified as “Flagship” type?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c6">
+            <label for="fundamentals-c6"><span class="challenge-num">6.</span> What is the highest single-line discount percentage ever applied on a Sales row?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c7">
+            <label for="fundamentals-c7"><span class="challenge-num">7.</span> How many customers are on the “Platinum” loyalty tier?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c8">
+            <label for="fundamentals-c8"><span class="challenge-num">8.</span> What is the total number of returned line items across the whole dataset?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c9">
+            <label for="fundamentals-c9"><span class="challenge-num">9.</span> Which store has the largest square footage?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c10">
+            <label for="fundamentals-c10"><span class="challenge-num">10.</span> What is the total list price value of the entire product catalogue?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c11">
+            <label for="fundamentals-c11"><span class="challenge-num">11.</span> How many distinct product categories exist in total?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c12">
+            <label for="fundamentals-c12"><span class="challenge-num">12.</span> What is the most common return reason recorded in the Returns table?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c13">
+            <label for="fundamentals-c13"><span class="challenge-num">13.</span> How many Sales line items have a Quantity of exactly 5?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c14">
+            <label for="fundamentals-c14"><span class="challenge-num">14.</span> What is the earliest OrderDate found anywhere in the Sales table?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c15">
+            <label for="fundamentals-c15"><span class="challenge-num">15.</span> Which region has the most customers?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c16">
+            <label for="fundamentals-c16"><span class="challenge-num">16.</span> What is the total number of line items with OrderStatus = “Cancelled”?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c17">
+            <label for="fundamentals-c17"><span class="challenge-num">17.</span> What is the lowest ListPrice recorded for any product?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c18">
+            <label for="fundamentals-c18"><span class="challenge-num">18.</span> How many promotions run on the “Online” channel only?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c19">
+            <label for="fundamentals-c19"><span class="challenge-num">19.</span> What is the total SquareFootage across all 12 stores combined?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c20">
+            <label for="fundamentals-c20"><span class="challenge-num">20.</span> How many customers joined RR Retail in the year 2023?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c21">
+            <label for="fundamentals-c21"><span class="challenge-num">21.</span> What is the average discount percentage across every Sales line, treating blanks as 0?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c22">
+            <label for="fundamentals-c22"><span class="challenge-num">22.</span> Which city has the most stores?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c23">
+            <label for="fundamentals-c23"><span class="challenge-num">23.</span> How many products were launched in 2024?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c24">
+            <label for="fundamentals-c24"><span class="challenge-num">24.</span> What is the total quantity of items ever returned?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="fundamentals-c25">
+            <label for="fundamentals-c25"><span class="challenge-num">25.</span> What is the shortest promotion duration, in days, among all promotions?</label>
+          </div>
+        </div>
+      </div>
+      <div class="mode-panel active" id="fundamentals-guided">
       
       <div class="ex-card">
         <div class="ex-head"><span class="badge column">Calculated column</span><h3>Net line value</h3></div>
@@ -2121,12 +2359,152 @@ IF ( [Total Net Sales] = 0, BLANK (), [Total Net Sales] )</pre>
           </div>
         </div>
       </div>
+    
+      </div>
     </section>
 
     <!-- ============ INTERMEDIATE ============ -->
     <section class="page" id="page-medium">
       <h1 class="page-title">2 · Intermediate</h1>
       <p class="page-lede">CALCULATE, a full set of time-intelligence functions, iterators, filter modifiers, and calculated tables built from measures — the tools behind most of a typical Power BI report.</p>
+      <div class="mode-toggle" data-tier="medium">
+        <button class="mode-btn active" data-mode="guided">Guided Exercises</button>
+        <button class="mode-btn" data-mode="challenge">Challenge Mode</button>
+      </div>
+      <div class="mode-panel" id="medium-challenge">
+        <div class="callout warn">
+          <strong>No hints, no solutions</strong>
+          These 25 questions only give you the business question — figure out the measure, column, or filter yourself using what you now know about the dataset and model. Check the number off once you're confident in your answer.
+        </div>
+        <div class="challenge-list">
+          
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c1">
+            <label for="medium-c1"><span class="challenge-num">1.</span> Which product category generated the highest total net sales in 2024?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c2">
+            <label for="medium-c2"><span class="challenge-num">2.</span> What was the month-over-month change in completed net sales between October and November 2024?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c3">
+            <label for="medium-c3"><span class="challenge-num">3.</span> Which store had the highest average order value across all its completed sales?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c4">
+            <label for="medium-c4"><span class="challenge-num">4.</span> What percentage of all Sales lines used a promotion in 2023, versus in 2024?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c5">
+            <label for="medium-c5"><span class="challenge-num">5.</span> Which customer segment — Consumer, Small Business, or Enterprise — has the highest average net sales per customer?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c6">
+            <label for="medium-c6"><span class="challenge-num">6.</span> What was the total completed net sales attributable to the “Diwali Dazzle” promotion specifically?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c7">
+            <label for="medium-c7"><span class="challenge-num">7.</span> Which day of the week sees the highest total completed net sales?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c8">
+            <label for="medium-c8"><span class="challenge-num">8.</span> Rank the four regions by total completed net sales — which comes last?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c9">
+            <label for="medium-c9"><span class="challenge-num">9.</span> What is the return rate (returned line items ÷ completed line items) for the “Mobile” category specifically?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c10">
+            <label for="medium-c10"><span class="challenge-num">10.</span> Which store type — Flagship, Standard, or Outlet — has the highest gross margin percentage?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c11">
+            <label for="medium-c11"><span class="challenge-num">11.</span> How did total completed net sales in Q4 2024 compare to Q4 2023?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c12">
+            <label for="medium-c12"><span class="challenge-num">12.</span> Which product had the highest total quantity sold across the full two years?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c13">
+            <label for="medium-c13"><span class="challenge-num">13.</span> What percentage of Gold-tier customers made at least one purchase in 2024?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c14">
+            <label for="medium-c14"><span class="challenge-num">14.</span> Which promotion had the highest total discount value given out, across every sale it was attached to?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c15">
+            <label for="medium-c15"><span class="challenge-num">15.</span> What is the average number of days between OrderDate and ShipDate, across all completed sales?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c16">
+            <label for="medium-c16"><span class="challenge-num">16.</span> Which region has the highest average discount percentage applied to its sales?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c17">
+            <label for="medium-c17"><span class="challenge-num">17.</span> Between the “Consumer” and “Enterprise” segments, which one has a higher average line profit per order?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c18">
+            <label for="medium-c18"><span class="challenge-num">18.</span> What was the busiest single calendar month for total line items sold, across the whole dataset?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c19">
+            <label for="medium-c19"><span class="challenge-num">19.</span> Which store came closest to hitting its sales target in December 2024, in percentage terms?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c20">
+            <label for="medium-c20"><span class="challenge-num">20.</span> What share of total completed net sales came from the “Audio” category during the festive months of October–November?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c21">
+            <label for="medium-c21"><span class="challenge-num">21.</span> Which sub-category within “Home Appliances” generated the most net sales?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c22">
+            <label for="medium-c22"><span class="challenge-num">22.</span> How many distinct customers made a purchase in both January 2023 and January 2024?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c23">
+            <label for="medium-c23"><span class="challenge-num">23.</span> What is the average gross margin percentage on products costing above ₹10,000, compared to those below?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c24">
+            <label for="medium-c24"><span class="challenge-num">24.</span> Which weekday has the highest average discount percentage applied to its sales?</label>
+          </div>
+
+          <div class="challenge-item">
+            <input type="checkbox" id="medium-c25">
+            <label for="medium-c25"><span class="challenge-num">25.</span> Comparing Platinum vs. Silver loyalty tiers, which group has a higher average order value?</label>
+          </div>
+        </div>
+      </div>
+      <div class="mode-panel active" id="medium-guided">
       
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Completed sales only</h3></div>
@@ -3059,6 +3437,8 @@ RETURN
               </div>
           </div>
         </div>
+      </div>
+    
       </div>
     </section>
 
@@ -4185,7 +4565,41 @@ function showPage(id){
   // throws a SecurityError on any URL-changing call. Navigation state is
   // kept in memory only.
 }
-navitems.forEach(n => n.addEventListener("click", () => showPage(n.dataset.page)));
+navitems.forEach(n => n.addEventListener("click", () => {
+  showPage(n.dataset.page);
+  toggleSidebar(false); // close the drawer on mobile after picking a page
+}));
+
+// Guided Exercises / Challenge Mode toggle (Fundamentals & Intermediate)
+document.querySelectorAll(".mode-toggle").forEach(toggle => {
+  const tier = toggle.dataset.tier;
+  const guidedPanel = document.getElementById(tier + "-guided");
+  const challengePanel = document.getElementById(tier + "-challenge");
+  toggle.querySelectorAll(".mode-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const mode = btn.dataset.mode;
+      toggle.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b === btn));
+      guidedPanel.classList.toggle("active", mode === "guided");
+      challengePanel.classList.toggle("active", mode === "challenge");
+    });
+  });
+});
+
+// Challenge Mode checkboxes: strike through the question once checked
+document.querySelectorAll(".challenge-item input[type='checkbox']").forEach(cb => {
+  cb.addEventListener("change", () => {
+    cb.closest(".challenge-item").classList.toggle("done", cb.checked);
+  });
+});
+
+// Collapsible responsive sidebar (mobile / narrow viewports)
+function toggleSidebar(force){
+  const sidebar = document.querySelector(".sidebar");
+  const backdrop = document.querySelector(".sidebar-backdrop");
+  const open = force !== undefined ? force : !sidebar.classList.contains("open");
+  sidebar.classList.toggle("open", open);
+  backdrop.classList.toggle("show", open);
+}
 
 showPage("overview");
 </script>
