@@ -499,6 +499,39 @@
   }
   .family-item p{margin:2px 0 0 0; font-size:13.5px;}
 
+  .qref-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+    margin:16px 0 8px 0;
+  }
+  @media (max-width:900px){ .qref-grid{grid-template-columns:repeat(2, 1fr);} }
+  @media (max-width:640px){ .qref-grid{grid-template-columns:1fr;} }
+  .qref-item{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:11px 13px;
+  }
+  .qref-item .qref-name{
+    font-family:"Cascadia Code","Consolas",monospace;
+    font-size:12px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:4px;
+  }
+  .qref-item p{
+    font-size:12px;
+    margin:0 0 6px 0;
+    color:#3A3F4B;
+    line-height:1.5;
+  }
+  .qref-item a{
+    font-size:11px;
+    text-decoration:none;
+  }
+  .qref-item a:hover{text-decoration:underline;}
+
   .bonus-card{
     background:var(--card);
     border:1px solid var(--line);
@@ -690,6 +723,535 @@
         </li>
       </ul>
 
+      <h2 class="section-h">How filters flow through your model</h2>
+      <p>Every relationship you build in the Data Model page has a direction it filters in. Getting this right is the difference between a measure that behaves and one that quietly returns the wrong number.</p>
+
+      <h3 class="sub-h">Filter propagation, in one sentence</h3>
+      <p>When you filter a column, that filter automatically flows across any relationship to every other table connected to it — this is <strong>filter propagation</strong>, and it's what lets a single click on a Region slicer narrow down Sales, Returns, and anything else connected, without you writing a single line of DAX.</p>
+
+      <h3 class="sub-h">One-to-many vs. many-to-one filtering</h3>
+      <p>A relationship like Stores → Sales is one-to-many from Stores' side: one store row can match many Sales rows. By default, a filter flows from the <strong>one</strong> side to the <strong>many</strong> side — filtering Stores narrows Sales automatically. It does <em>not</em> flow the other way by default: filtering Sales down to a handful of rows won't, on its own, narrow which stores appear in a Stores-only visual. That's why several Advanced exercises (like the Promotions attach-rate and whitespace exercises) had to reach for tools like <code>CROSSFILTER</code> and <code>RELATEDTABLE</code> instead of relying on the relationship alone.</p>
+
+      <h3 class="sub-h">Using CROSSFILTER to control direction</h3>
+      <p><code>CROSSFILTER</code> temporarily overrides a relationship's default direction — or turns it off entirely — for one calculation, without touching the relationship itself in the model. You reached for this in Advanced to let a Sales-side filter narrow down Promotions, which the modelled relationship doesn't do on its own.</p>
+
+      <h3 class="sub-h">Combining FILTER and CALCULATE for control</h3>
+      <p><code>CALCULATE</code> changes filter context using simple conditions or filter-modifier functions like <code>ALL</code> and <code>ALLEXCEPT</code>. When the condition you need is more complex than a single column comparison — matching several columns at once, as in the Targets-bridging exercises — <code>FILTER</code> builds that custom row-by-row logic as its own table, which you then hand to <code>CALCULATE</code> as a filter argument. FILTER gives you the control; CALCULATE is what actually applies it.</p>
+
+      <div class="callout">
+        <strong>A note on “View As”</strong>
+        Power BI Desktop has a separate “View As Roles” feature for testing row-level security (RLS) — letting you preview a report as a specific role would see it. It isn't a DAX function; it's a Modeling-ribbon feature that applies whatever DAX filter expressions you've defined for your RLS roles. If you build roles for this dataset, that's where you'd test them. See <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-admin-rls" target="_blank" rel="noopener">Row-level security (RLS) on Microsoft Learn &#8599;</a>.
+      </div>
+
+      <h2 class="section-h">Quick reference: every function used in this course</h2>
+      <p>All 84 functions below appear in at least one exercise or Bonus query. This is the fast way to jump straight to a function's official page without hunting through an exercise first.</p>
+      <div class="qref-grid">
+        
+        <div class="qref-item">
+          <div class="qref-name">ADDCOLUMNS</div>
+          <p>Takes an existing table and adds new calculated columns to it, evaluated row by row.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/addcolumns-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ALL</div>
+          <p>Removes filters from a table or column, so a calculation can see everything instead of just what's currently selected.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/all-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ALLEXCEPT</div>
+          <p>Removes every filter from a table except the columns you name.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/allexcept-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ALLSELECTED</div>
+          <p>Removes filters added by the visual itself, but keeps filters from outside it (like a page-level slicer).</p>
+          <a href="https://learn.microsoft.com/en-us/dax/allselected-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">AND</div>
+          <p>Returns TRUE only when both of two conditions are TRUE.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/and-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">AVERAGE</div>
+          <p>Returns the arithmetic mean of a column, ignoring blanks.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/average-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">AVERAGEX</div>
+          <p>An iterator: evaluates an expression for every row of a table and returns the average of the results.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/averagex-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">BLANK</div>
+          <p>Returns the DAX blank value explicitly — used to deliberately hide a result (e.g. suppress a zero) or to pass ‘no boundary’ into a function like DATESBETWEEN.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/blank-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">CALCULATE</div>
+          <p>Evaluates an expression inside a modified filter context. Nearly every other measure in this course is built around it.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">CALCULATETABLE</div>
+          <p>The table-returning counterpart to CALCULATE — evaluates a table expression inside a modified filter context.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/calculatetable-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">COALESCE</div>
+          <p>Returns the first argument that isn't blank, checked in order — a defensive fallback for messy source data.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/coalesce-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">CONCATENATE</div>
+          <p>Joins two text values into one.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/concatenate-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">CONCATENATEX</div>
+          <p>Joins the values of an expression across every row of a table into a single text value, with a delimiter you choose.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/concatenatex-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">CONTAINS</div>
+          <p>Checks whether a table contains a row with a specific combination of column values, returning TRUE or FALSE.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/contains-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">COUNT</div>
+          <p>Counts the numeric, date, or currency values in a column — blanks and non-numeric values are ignored.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/count-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">COUNTA</div>
+          <p>Counts the non-blank values in a column, regardless of data type.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/counta-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">COUNTBLANK</div>
+          <p>Counts how many rows in a column are blank.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/countblank-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">COUNTROWS</div>
+          <p>Counts the number of rows in a table, rather than counting values in a specific column.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/countrows-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">CROSSFILTER</div>
+          <p>Temporarily changes the filtering direction or behaviour of a relationship for one calculation, without editing the relationship itself.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/crossfilter-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">CROSSJOIN</div>
+          <p>Returns the Cartesian product of two or more tables — every possible combination of rows between them.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/crossjoin-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DATE</div>
+          <p>Constructs a date value from separate year, month, and day numbers.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/date-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DATEADD</div>
+          <p>Shifts the current date filter forward or backward by a number of intervals — the general-purpose building block behind most time-intelligence shortcuts.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/dateadd-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DATESBETWEEN</div>
+          <p>Returns the set of dates in a column that fall between two boundary dates you specify.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/datesbetween-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DATESINPERIOD</div>
+          <p>Returns a rolling window of dates: a starting date plus a number of intervals (days/months/quarters/years) forward or backward — the standard building block for moving averages.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/datesinperiod-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DATESMTD</div>
+          <p>Returns the dates from the start of the current month up to the latest date in context.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/datesmtd-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DATESQTD</div>
+          <p>Returns the dates from the start of the current quarter up to the latest date in context.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/datesqtd-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DISTINCT</div>
+          <p>Returns a one-column table of the unique values found in a column.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/distinct-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DISTINCTCOUNT</div>
+          <p>Counts how many distinct, non-blank values appear in a column.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/distinctcount-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">DIVIDE</div>
+          <p>Divides two numbers and lets you supply a fallback result for when the denominator is zero, instead of returning an error.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/divide-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">EOMONTH</div>
+          <p>Returns the last day of the month a given number of months before or after a start date.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/eomonth-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">EXCEPT</div>
+          <p>Returns the rows from the first table that don't appear in the second.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/except-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">FILTER</div>
+          <p>Returns a smaller version of a table, keeping only the rows that pass a condition.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/filter-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">GENERATE</div>
+          <p>For every row of one table, evaluates a second table expression in that row's context and joins the results.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/generate-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">GENERATESERIES</div>
+          <p>Builds a single-column table of evenly spaced numbers between a start and end value.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/generateseries-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">HASONEVALUE</div>
+          <p>Returns TRUE when exactly one distinct value of a column is visible in the current filter context.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/hasonevalue-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">IF</div>
+          <p>Returns one value when a condition is TRUE and another when it's FALSE.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/if-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">IFERROR</div>
+          <p>Evaluates an expression and returns a fallback value if that expression returns any error.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/iferror-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">INTERSECT</div>
+          <p>Returns only the rows that appear in both of two same-shaped tables.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/intersect-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ISBLANK</div>
+          <p>Returns TRUE when a value is blank — the standard way to test for a missing foreign key or an empty cell.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/isblank-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ISCROSSFILTERED</div>
+          <p>Returns TRUE when a table is filtered directly or indirectly through a relationship — broader than ISFILTERED.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/iscrossfiltered-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ISFILTERED</div>
+          <p>Returns TRUE when a column or table is being filtered directly.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/isfiltered-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">KEEPFILTERS</div>
+          <p>Changes how a filter argument inside CALCULATE combines with existing filters — it intersects with them instead of replacing them.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/keepfilters-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">LEFT</div>
+          <p>Returns a given number of characters from the start of a text value.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/left-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">LEN</div>
+          <p>Returns the number of characters in a text value, including spaces.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/len-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">LOOKUPVALUE</div>
+          <p>Looks up a value in another table by matching one or more column values exactly — works without a modelled relationship.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/lookupvalue-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">LOWER</div>
+          <p>Converts every letter in a text value to lower case.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/lower-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">MAX</div>
+          <p>Returns the largest value in a column for the current filter context.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/max-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">MAXX</div>
+          <p>An iterator: evaluates an expression for every row of a table and returns the largest result.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/maxx-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">MEDIAN</div>
+          <p>Returns the median (middle value) of a column — less sensitive to outliers than AVERAGE.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/median-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">MIN</div>
+          <p>Returns the smallest value in a column for the current filter context.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/min-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">MINX</div>
+          <p>An iterator: evaluates an expression for every row of a table and returns the smallest result.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/minx-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">MONTH</div>
+          <p>Extracts the month number (1–12) from a date value.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/month-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">NOT</div>
+          <p>Reverses a TRUE/FALSE result.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/not-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">OR</div>
+          <p>Returns TRUE when at least one of two conditions is TRUE.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/or-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">PARALLELPERIOD</div>
+          <p>Shifts the current date filter by a number of whole periods (months, quarters, or years) — a flexible alternative to SAMEPERIODLASTYEAR.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/parallelperiod-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">PREVIOUSMONTH</div>
+          <p>Returns the full calendar month immediately before whatever's in the current date filter.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/previousmonth-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">PREVIOUSYEAR</div>
+          <p>Returns the full calendar year immediately before whatever's in the current date filter.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/previousyear-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">RANKX</div>
+          <p>Ranks a value produced by an expression against that same expression evaluated for every row of a table you supply.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/rankx-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">RELATED</div>
+          <p>Pulls a value from the ‘one’ side of a relationship into the current row of the ‘many’ side.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/related-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">RELATEDTABLE</div>
+          <p>The reverse of RELATED: from a row on the ‘one’ side, returns every matching row from the ‘many’ side as a table.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/relatedtable-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">REMOVEFILTERS</div>
+          <p>Clears filters from a table or column entirely — a more explicitly named, modern alternative to ALL.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/removefilters-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ROUND</div>
+          <p>Rounds a number to a specified number of digits.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/round-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ROUNDDOWN</div>
+          <p>Rounds a number toward zero, always down.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/rounddown-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ROUNDUP</div>
+          <p>Rounds a number away from zero, always up.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/roundup-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">ROW</div>
+          <p>Builds a table with exactly one row, from name/value pairs you specify directly.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/row-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">SAMEPERIODLASTYEAR</div>
+          <p>Shifts the current date filter back exactly one year.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/sameperiodlastyear-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">SELECTCOLUMNS</div>
+          <p>Builds a new table by picking specific columns — and renaming them — from an existing table.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/selectcolumns-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">SELECTEDVALUE</div>
+          <p>Returns the single value selected in a column when exactly one is in context, or a fallback when several are selected.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/selectedvalue-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">SUM</div>
+          <p>Adds up every value in a column, ignoring blanks.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/sum-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">SUMMARIZE</div>
+          <p>Groups a table by one or more columns and lets you add summary expressions per group.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/summarize-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">SUMMARIZECOLUMNS</div>
+          <p>The engine's preferred, higher-performance way to group and summarize — it groups by column, applies any filter tables, then adds summary expressions, all in one call.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/summarizecolumns-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">SUMX</div>
+          <p>An iterator: walks a table row by row, evaluates an expression for each row, then sums the results.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/sumx-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">SWITCH</div>
+          <p>Compares one expression against a list of possible values and returns the matching result.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/switch-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">TOPN</div>
+          <p>Returns the top (or bottom) N rows of a table, ranked by an expression you supply.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/topn-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">TOTALMTD</div>
+          <p>A time-intelligence shorthand for the current month up to the latest date in context.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/totalmtd-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">TOTALQTD</div>
+          <p>A time-intelligence shorthand for the current quarter up to the latest date in context.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/totalqtd-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">TOTALYTD</div>
+          <p>A time-intelligence shorthand that evaluates a measure from the start of the current year up to the latest date in context. Takes an optional fiscal year-end date as a third argument.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/totalytd-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">TRIM</div>
+          <p>Removes leading, trailing, and repeated interior spaces from a text value.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/trim-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">UNION</div>
+          <p>Stacks two or more same-shaped tables on top of each other into one combined table.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/union-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">UPPER</div>
+          <p>Converts every letter in a text value to upper case.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/upper-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">USERELATIONSHIP</div>
+          <p>Activates one specific inactive relationship for the duration of a single CALCULATE.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/userelationship-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">VALUES</div>
+          <p>Returns the distinct values of a column as currently filtered.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/values-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">WEEKDAY</div>
+          <p>Returns the day of the week for a date, as a number, using the numbering system you specify.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/weekday-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+
+        <div class="qref-item">
+          <div class="qref-name">YEAR</div>
+          <p>Extracts the year number from a date value.</p>
+          <a href="https://learn.microsoft.com/en-us/dax/year-function-dax" target="_blank" rel="noopener">Reference &#8599;</a>
+        </div>
+      </div>
+
       <h2 class="section-h">Where to go deeper</h2>
       <p>Every exercise solution in this course links straight to the specific function's page. For browsing the whole language at once, Microsoft's own reference is the most reliable source — it's kept current with every DAX release, across Power BI, Analysis Services, and Excel.</p>
       <div class="callout tip">
@@ -840,12 +1402,12 @@
     <!-- ============ FUNDAMENTALS ============ -->
     <section class="page" id="page-fundamentals">
       <h1 class="page-title">1 · Fundamentals</h1>
-      <p class="page-lede">Calculated columns, a calculated table, and basic aggregations — the row-context-vs-filter-context distinction that everything else in DAX rests on.</p>
+      <p class="page-lede">Calculated columns, calculated tables, and a wide first pass across DAX's aggregation, text, rounding, and date functions — the row-context-vs-filter-context distinction that everything else in DAX rests on.</p>
       
       <div class="ex-card">
         <div class="ex-head"><span class="badge column">Calculated column</span><h3>Net line value</h3></div>
         <p class="ex-question">Every order line needs a value that already accounts for quantity, price and any discount. Add a column on <strong>Sales</strong> called <code>Net Sales Amount</code>.</p>
-        <p class="ex-hint"><strong>Hint —</strong> Calculated columns are evaluated per row, so you can reference other columns on the same table directly — no CALCULATE needed.</p>
+        <p class="ex-hint"><strong>Hint —</strong> Calculated columns are evaluated per row, so you can reference other columns on the same table directly.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -869,8 +1431,8 @@ Sales[Quantity] * Sales[UnitPrice] * (1 - Sales[DiscountPercent])</pre>
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge column">Calculated column</span><h3>Order size tier</h3></div>
-        <p class="ex-question">Bucket every Sales line into a plain-language size label — <code>"Single Item"</code> for a quantity of exactly 1, <code>"Bulk"</code> for 4 or more, and <code>"Small Order"</code> for everything in between. Add this as a column called <code>Order Size Tier</code> on <strong>Sales</strong>.</p>
-        <p class="ex-hint"><strong>Hint —</strong> You're choosing between more than two outcomes, so a single IF won't be enough on its own — nest one IF inside another, checking the more specific condition first.</p>
+        <p class="ex-question">Bucket every Sales line into <code>"Single Item"</code> (quantity of 1), <code>"Bulk"</code> (4 or more), or <code>"Small Order"</code> otherwise. Add this as <code>Order Size Tier</code> on <strong>Sales</strong>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> You're choosing between more than two outcomes — nest one IF inside another, checking the more specific condition first.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -897,7 +1459,7 @@ IF (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Total net sales</h3></div>
-        <p class="ex-question">Create a measure that adds up every line's net value across whatever is currently filtered — a store, a category, a month, anything.</p>
+        <p class="ex-question">Create a measure that adds up every line's net value across whatever is currently filtered.</p>
         <p class="ex-hint"><strong>Hint —</strong> SUM aggregates a column across the current filter context. This is the measure almost everything else in the course builds on.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
@@ -921,8 +1483,8 @@ IF (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Line items vs. distinct orders</h3></div>
-        <p class="ex-question">Build two measures: <code>Total Line Items</code> (every row in Sales counts) and <code>Total Orders</code> (how many distinct orders that represents).</p>
-        <p class="ex-hint"><strong>Hint —</strong> In this dataset every SalesID happens to be unique per row, so COUNTROWS and DISTINCTCOUNT(SalesID) will return the same number here — but they answer different questions, and won't always match once a real order can span multiple lines.</p>
+        <p class="ex-question">Build two measures: <code>Total Line Items</code> (every row counts) and <code>Total Orders</code> (how many distinct orders that represents).</p>
+        <p class="ex-hint"><strong>Hint —</strong> COUNTROWS counts rows in a table; DISTINCTCOUNT counts unique values in a column — they answer different questions even when the numbers happen to match here.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -952,7 +1514,7 @@ Total Orders = DISTINCTCOUNT ( Sales[SalesID] )</pre>
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Average order value</h3></div>
-        <p class="ex-question">Work out the average net sales value per line item — safely, so it doesn't error when a filter returns zero rows.</p>
+        <p class="ex-question">Work out the average net sales value per line item — safely, so it doesn't error on an empty filter.</p>
         <p class="ex-hint"><strong>Hint —</strong> Plain division breaks on an empty filter context. DIVIDE takes a third argument for exactly that case.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
@@ -978,7 +1540,7 @@ DIVIDE ( [Total Net Sales], [Total Line Items], 0 )</pre>
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Total cost of goods sold</h3></div>
         <p class="ex-question">Cost lives on Products, not on Sales. Build a measure for total cost that multiplies each line's quantity by that product's unit cost.</p>
-        <p class="ex-hint"><strong>Hint —</strong> SUMX walks Sales row by row, and RELATED pulls a value from the one-side table (Products) through the relationship you built. SUM alone can't do this because Cost isn't a column on Sales.</p>
+        <p class="ex-hint"><strong>Hint —</strong> SUMX walks Sales row by row, and RELATED pulls a value from the one-side table (Products) through the relationship you built.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -996,12 +1558,12 @@ SUMX (
             
               <div class="fn-item">
                 <div class="fn-name">SUMX</div>
-                <p>An iterator: walks a table row by row, evaluates an expression for each row, then sums the results. Needed whenever the per-row calculation itself — not just the total — depends on more than one column.</p>
+                <p>An iterator: walks a table row by row, evaluates an expression for each row, then sums the results.</p>
                 <a href="https://learn.microsoft.com/en-us/dax/sumx-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
               </div>
               <div class="fn-item">
                 <div class="fn-name">RELATED</div>
-                <p>Pulls a value from the ‘one’ side of a relationship into the current row of the ‘many’ side — e.g. reading a product's cost from Products while sitting on a Sales row.</p>
+                <p>Pulls a value from the ‘one’ side of a relationship into the current row of the ‘many’ side.</p>
                 <a href="https://learn.microsoft.com/en-us/dax/related-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
               </div>
           </div>
@@ -1011,7 +1573,7 @@ SUMX (
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Gross profit and margin</h3></div>
         <p class="ex-question">From the two measures above, build <code>Gross Profit</code> and <code>Gross Margin %</code>.</p>
-        <p class="ex-hint"><strong>Hint —</strong> Reference existing measures inside new ones instead of retyping the logic — it's shorter and it stays correct if the underlying measure ever changes.</p>
+        <p class="ex-hint"><strong>Hint —</strong> Reference existing measures inside new ones instead of retyping the logic.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1036,8 +1598,8 @@ Gross Margin % = DIVIDE ( [Gross Profit], [Total Net Sales] )</pre>
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge table">Calculated table</span><h3>Category list</h3></div>
-        <p class="ex-question">Marketing wants a simple, standalone list of every product category to drive a slicer. Build a calculated table called <code>Categories</code> with one column: every distinct value from <code>Products[Category]</code>.</p>
-        <p class="ex-hint"><strong>Hint —</strong> This is the simplest kind of calculated table — one function, one column, no row-by-row logic.</p>
+        <p class="ex-question">Marketing wants a simple, standalone list of every product category to drive a slicer. Build a table called <code>Categories</code> with every distinct value from <code>Products[Category]</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> The simplest kind of calculated table — one function, one column.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1057,17 +1619,519 @@ Gross Margin % = DIVIDE ( [Gross Profit], [Total Net Sales] )</pre>
           </div>
         </div>
       </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Average and extreme list prices</h3></div>
+        <p class="ex-question">Build three catalogue-health measures in one go: <code>Average List Price</code>, <code>Highest List Price</code>, and <code>Lowest Cost Product</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> AVERAGE, MAX and MIN all work the same way — point them at a column and they aggregate across whatever's currently in context.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Average List Price = AVERAGE ( Products[ListPrice] )
+
+Highest List Price = MAX ( Products[ListPrice] )
+
+Lowest Cost Product = MIN ( Products[Cost] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">AVERAGE</div>
+                <p>Returns the arithmetic mean of a column, ignoring blanks.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/average-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">MAX</div>
+                <p>Returns the largest value in a column for the current filter context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/max-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">MIN</div>
+                <p>Returns the smallest value in a column for the current filter context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/min-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Products with a recorded cost</h3></div>
+        <p class="ex-question">Before trusting a profit report, check data quality: how many products actually have a numeric <code>Cost</code> value?</p>
+        <p class="ex-hint"><strong>Hint —</strong> COUNT only counts numeric, date, or currency values — it silently skips blanks and text, which makes it a quick data-quality check.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Products With Cost Recorded = COUNT ( Products[Cost] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">COUNT</div>
+                <p>Counts the numeric, date, or currency values in a column — blanks and non-numeric values are ignored.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/count-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Line items without a promotion</h3></div>
+        <p class="ex-question">You already know roughly two-thirds of Sales rows have a blank PromotionID — turn that into an actual measure.</p>
+        <p class="ex-hint"><strong>Hint —</strong> COUNTBLANK counts blanks in a column directly — no CALCULATE or filter condition needed.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Line Items Without a Promotion = COUNTBLANK ( Sales[PromotionID] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">COUNTBLANK</div>
+                <p>Counts how many rows in a column are blank.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/countblank-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Customers with an email on file</h3></div>
+        <p class="ex-question">Count how many customer records actually have something in the <code>Email</code> column.</p>
+        <p class="ex-hint"><strong>Hint —</strong> COUNTA counts non-blank values of any type — text included — unlike COUNT, which only looks at numbers.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Customers With Email = COUNTA ( Customers[Email] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">COUNTA</div>
+                <p>Counts the non-blank values in a column, regardless of data type.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/counta-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Price rounded to the nearest hundred</h3></div>
+        <p class="ex-question">Merchandising wants a tidy, rounded price band on Products for a wall chart. Add <code>List Price (Rounded)</code>, rounded to the nearest ₹100.</p>
+        <p class="ex-hint"><strong>Hint —</strong> The second argument to ROUND is how many digits to round to — negative numbers round to the left of the decimal point.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Products[List Price (Rounded)] = ROUND ( Products[ListPrice], -2 )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">ROUND</div>
+                <p>Rounds a number to a specified number of digits — negative digits round to the left of the decimal point (tens, hundreds...).</p>
+                <a href="https://learn.microsoft.com/en-us/dax/round-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Price ceiling and floor</h3></div>
+        <p class="ex-question">Add two more columns: <code>Price Ceiling (100)</code>, always rounded up to the next ₹100, and <code>Price Floor (100)</code>, always rounded down.</p>
+        <p class="ex-hint"><strong>Hint —</strong> ROUNDUP and ROUNDDOWN ignore the usual “round to nearest” rule — they always move in one direction.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Products[Price Ceiling (100)] = ROUNDUP ( Products[ListPrice], -2 )
+
+Products[Price Floor (100)] = ROUNDDOWN ( Products[ListPrice], -2 )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">ROUNDUP</div>
+                <p>Rounds a number away from zero, always rounding up regardless of the digit that follows.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/roundup-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">ROUNDDOWN</div>
+                <p>Rounds a number toward zero, always rounding down regardless of the digit that follows.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/rounddown-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Shout-case customer name</h3></div>
+        <p class="ex-question">For a print mailer template, add a column on <strong>Customers</strong> called <code>Customer Name (Upper)</code> that shows the name in capitals.</p>
+        <p class="ex-hint"><strong>Hint —</strong> UPPER takes one text argument and returns it in capitals — nothing fancier than that.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Customers[Customer Name (Upper)] = UPPER ( Customers[CustomerName] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">UPPER</div>
+                <p>Converts every letter in a text value to upper case.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/upper-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Lowercase city for matching</h3></div>
+        <p class="ex-question">Add a column on <strong>Stores</strong> called <code>City (Lower)</code> — useful later for case-insensitive matching against another system's export.</p>
+        <p class="ex-hint"><strong>Hint —</strong> LOWER is UPPER's mirror image.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Stores[City (Lower)] = LOWER ( Stores[City] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">LOWER</div>
+                <p>Converts every letter in a text value to lower case.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/lower-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Brand code</h3></div>
+        <p class="ex-question">Add a column on <strong>Products</strong> called <code>Brand Code</code> that takes the first three letters of the brand name, for a short SKU label.</p>
+        <p class="ex-hint"><strong>Hint —</strong> LEFT's second argument is how many characters to keep, counting from the start of the text.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Products[Brand Code] = LEFT ( Products[Brand], 3 )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">LEFT</div>
+                <p>Returns a given number of characters from the start of a text value.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/left-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Product name length check</h3></div>
+        <p class="ex-question">The print catalogue template only has room for 28 characters per product name. Add a column called <code>Name Length</code> so the team can filter for anything too long.</p>
+        <p class="ex-hint"><strong>Hint —</strong> LEN simply counts characters, spaces included.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Products[Name Length] = LEN ( Products[ProductName] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">LEN</div>
+                <p>Returns the number of characters in a text value, including spaces.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/len-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Cleaned store name</h3></div>
+        <p class="ex-question">Some store names were exported with stray double spaces. Add a column called <code>StoreName (Clean)</code> on <strong>Stores</strong> that removes them.</p>
+        <p class="ex-hint"><strong>Hint —</strong> TRIM removes leading, trailing, and repeated interior spaces — a standard first step when cleaning any text export.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Stores[StoreName (Clean)] = TRIM ( Stores[StoreName] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">TRIM</div>
+                <p>Removes leading, trailing, and repeated interior spaces from a text value — useful for cleaning up messy source data.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/trim-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Full product label</h3></div>
+        <p class="ex-question">Build a single display label on <strong>Products</strong> called <code>Full Label</code>, combining Brand and ProductName with a space between them.</p>
+        <p class="ex-hint"><strong>Hint —</strong> CONCATENATE only takes two arguments. For joining more than two pieces of text, most DAX authors switch to the & operator instead — but for exactly two, CONCATENATE reads clearly.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Products[Full Label] = CONCATENATE ( Products[Brand], CONCATENATE ( &quot; &quot;, Products[ProductName] ) )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CONCATENATE</div>
+                <p>Joins two text values into one. For more than two pieces, the & operator is usually simpler.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/concatenate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>A margin measure that never errors</h3></div>
+        <p class="ex-question">Build an alternative version of Gross Margin % — called <code>Gross Margin % (Safe)</code> — that returns blank instead of an error under any failure, not just division by zero.</p>
+        <p class="ex-hint"><strong>Hint —</strong> IFERROR wraps an entire expression and catches any error it produces, not only #DIV/0! — useful when an expression could fail for more than one reason.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Gross Margin % (Safe) =
+IFERROR ( [Gross Profit] / [Total Net Sales], BLANK () )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">IFERROR</div>
+                <p>Evaluates an expression and returns a fallback value if that expression returns any error — not just a divide-by-zero.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/iferror-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Weekday of the order</h3></div>
+        <p class="ex-question">Add a column directly on <strong>Sales</strong> called <code>Order Weekday</code>, numbered so Monday = 1 through Sunday = 7.</p>
+        <p class="ex-hint"><strong>Hint —</strong> WEEKDAY's second argument picks the numbering system — type 2 starts the week on Monday.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales[Order Weekday] = WEEKDAY ( Sales[OrderDate], 2 )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">WEEKDAY</div>
+                <p>Returns the day of the week for a date, as a number, using the numbering system you specify.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/weekday-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Launch month-end</h3></div>
+        <p class="ex-question">For reporting that only cares about month-level launch timing, add a column on <strong>Products</strong> called <code>Launch Month End</code>, showing the last day of the product's launch month.</p>
+        <p class="ex-hint"><strong>Hint —</strong> EOMONTH's second argument shifts by whole months — 0 means “this same month.”</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Products[Launch Month End] = EOMONTH ( Products[LaunchDate], 0 )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">EOMONTH</div>
+                <p>Returns the last day of the month that is a given number of months before or after a start date.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/eomonth-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Store snapshot</h3></div>
+        <p class="ex-question">Build a lightweight calculated table called <code>Store Snapshot</code> with just two friendly-named columns: Store Name and Region.</p>
+        <p class="ex-hint"><strong>Hint —</strong> SELECTCOLUMNS lets you pick and rename columns from an existing table without touching the original.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Store Snapshot =
+SELECTCOLUMNS (
+    Stores,
+    &quot;Store Name&quot;, Stores[StoreName],
+    &quot;Region&quot;, Stores[Region]
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">SELECTCOLUMNS</div>
+                <p>Builds a new table by picking specific columns — and renaming them — from an existing table.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/selectcolumns-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Course info</h3></div>
+        <p class="ex-question">Add a tiny one-row calculated table called <code>Course Info</code> holding just the course name and author, as a footer detail for a report page.</p>
+        <p class="ex-hint"><strong>Hint —</strong> ROW builds a table from literal name/value pairs — no source table required at all.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Course Info =
+ROW (
+    &quot;Course&quot;, &quot;Let&#x27;s Learn DAX&quot;,
+    &quot;Author&quot;, &quot;RR Skillverse&quot;
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">ROW</div>
+                <p>Builds a table with exactly one row, from name/value pairs you specify directly — useful for small reference or metadata tables.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/row-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Region × loyalty tier grid</h3></div>
+        <p class="ex-question">Merchandising wants every possible combination of Region and Loyalty Tier laid out as a grid, to plan a mailer campaign — including combinations that don't have any customers yet. Build a calculated table called <code>Region Tier Grid</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> CROSSJOIN produces every possible pairing between two tables' rows — useful whenever you need the full combination space, not just the combinations that already exist in your data.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Region Tier Grid =
+CROSSJOIN (
+    DISTINCT ( Customers[Region] ),
+    DISTINCT ( Customers[LoyaltyTier] )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CROSSJOIN</div>
+                <p>Returns the Cartesian product of two or more tables — every possible combination of rows between them.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/crossjoin-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DISTINCT</div>
+                <p>Returns a one-column table of the unique values found in a column.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/distinct-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Hide zero-value bars</h3></div>
+        <p class="ex-question">A column chart of sales by product is cluttered with zero-height bars for products with no sales this month. Build a measure that shows nothing at all instead of a literal 0.</p>
+        <p class="ex-hint"><strong>Hint —</strong> BLANK() is a real, explicit value in DAX — a visual typically skips a category whose measure returns BLANK, but still draws a bar for a plain 0.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Net Sales (Hide Zeros) =
+IF ( [Total Net Sales] = 0, BLANK (), [Total Net Sales] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">BLANK</div>
+                <p>Returns the DAX blank value explicitly — used to deliberately hide a result (e.g. suppress a zero) or to pass ‘no boundary’ into a function like DATESBETWEEN.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/blank-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">IF</div>
+                <p>Returns one value when a condition is TRUE and another when it's FALSE.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/if-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ============ INTERMEDIATE ============ -->
     <section class="page" id="page-medium">
       <h1 class="page-title">2 · Intermediate</h1>
-      <p class="page-lede">CALCULATE, time intelligence, ranking, and your first calculated table built from measures — the tools behind most of a typical Power BI report.</p>
+      <p class="page-lede">CALCULATE, a full set of time-intelligence functions, iterators, filter modifiers, and calculated tables built from measures — the tools behind most of a typical Power BI report.</p>
       
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Completed sales only</h3></div>
-        <p class="ex-question">Cancelled orders shouldn't count toward revenue. Build a measure that only totals lines where <code>OrderStatus = "Completed"</code>, without touching your original Total Net Sales measure.</p>
-        <p class="ex-hint"><strong>Hint —</strong> CALCULATE changes filter context. Passing a condition as its second argument overrides whatever filter is already there for OrderStatus.</p>
+        <p class="ex-question">Cancelled orders shouldn't count toward revenue. Build a measure that only totals lines where <code>OrderStatus = "Completed"</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> CALCULATE changes filter context. Passing a condition as its second argument overrides whatever filter is already there.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1094,8 +2158,8 @@ CALCULATE (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge column">Calculated column</span><h3>Line profit</h3></div>
-        <p class="ex-question">Turn Net Sales Amount into an actual profit figure at the line-item level by subtracting that line's cost. Add a column on <strong>Sales</strong> called <code>Line Profit</code>.</p>
-        <p class="ex-hint"><strong>Hint —</strong> You already reached across to Products with RELATED in Fundamentals for a measure — the same function works inside a calculated column, since a column is also evaluated with row context.</p>
+        <p class="ex-question">Turn Net Sales Amount into an actual profit figure at the line-item level. Add a column on <strong>Sales</strong> called <code>Line Profit</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> The same RELATED you used for a measure works inside a calculated column too, since a column is also evaluated with row context.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1110,7 +2174,7 @@ Sales[Net Sales Amount] - ( Sales[Quantity] * RELATED ( Products[Cost] ) )</pre>
             
               <div class="fn-item">
                 <div class="fn-name">RELATED</div>
-                <p>Pulls a value from the ‘one’ side of a relationship into the current row of the ‘many’ side — e.g. reading a product's cost from Products while sitting on a Sales row.</p>
+                <p>Pulls a value from the ‘one’ side of a relationship into the current row of the ‘many’ side.</p>
                 <a href="https://learn.microsoft.com/en-us/dax/related-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
               </div>
           </div>
@@ -1119,8 +2183,8 @@ Sales[Net Sales Amount] - ( Sales[Quantity] * RELATED ( Products[Cost] ) )</pre>
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Year-to-date sales</h3></div>
-        <p class="ex-question">The regional head wants to see running year-to-date revenue on a line chart, resetting every January.</p>
-        <p class="ex-hint"><strong>Hint —</strong> TOTALYTD is a shorthand time-intelligence function — it needs a measure and a reference to your marked Date table's date column.</p>
+        <p class="ex-question">The regional head wants running year-to-date revenue on a line chart, resetting every January.</p>
+        <p class="ex-hint"><strong>Hint —</strong> TOTALYTD is a shorthand time-intelligence function — it needs a measure and a reference to your marked Date table.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1143,8 +2207,8 @@ Sales[Net Sales Amount] - ( Sales[Quantity] * RELATED ( Products[Cost] ) )</pre>
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Same period last year</h3></div>
-        <p class="ex-question">Build the comparison figure: what were completed sales doing at this exact point in the calendar, one year earlier?</p>
-        <p class="ex-hint"><strong>Hint —</strong> SAMEPERIODLASTYEAR shifts the current date filter back exactly one year, then CALCULATE re-evaluates the measure inside that shifted context.</p>
+        <p class="ex-question">What were completed sales doing at this exact point in the calendar, one year earlier?</p>
+        <p class="ex-hint"><strong>Hint —</strong> SAMEPERIODLASTYEAR shifts the current date filter back exactly one year.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1177,7 +2241,7 @@ CALCULATE (
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Year-over-year growth %</h3></div>
         <p class="ex-question">Turn the previous two measures into a single growth percentage, safe against a zero or blank prior year.</p>
-        <p class="ex-hint"><strong>Hint —</strong> Subtract, then DIVIDE by the prior-year figure — not the current one.</p>
+        <p class="ex-hint"><strong>Hint —</strong> Subtract, then DIVIDE by the prior-year figure.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1204,8 +2268,8 @@ DIVIDE (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Rank stores by revenue</h3></div>
-        <p class="ex-question">Add a measure that shows each store's rank by completed sales, so a table visual of stores can be sorted by performance without a separate sort column.</p>
-        <p class="ex-hint"><strong>Hint —</strong> RANKX needs a table to rank across — ALL(Stores) removes any existing store filter just for that ranking table, so every store is compared against every other store, not just itself.</p>
+        <p class="ex-question">Show each store's rank by completed sales, so a table visual can be sorted by performance.</p>
+        <p class="ex-hint"><strong>Hint —</strong> RANKX needs a table to rank across — ALL(Stores) compares every store against every other store, not just itself.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1237,8 +2301,8 @@ RANKX (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Category share of total</h3></div>
-        <p class="ex-question">For a given category in a visual, show what percentage of the whole company's sales it represents — the percentage should stay meaningful even inside a filtered view (e.g. one region selected).</p>
-        <p class="ex-hint"><strong>Hint —</strong> You need the category's own filtered total divided by a version of that same measure with the Products filter removed — but keep other filters, like region, intact.</p>
+        <p class="ex-question">Show what percentage of the whole company's sales a category represents — even inside a filtered view like one region selected.</p>
+        <p class="ex-hint"><strong>Hint —</strong> You need the category's own total divided by the same measure with the Products filter removed, but other filters kept.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1275,8 +2339,8 @@ DIVIDE (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge table">Calculated table</span><h3>Category performance</h3></div>
-        <p class="ex-question">Build a standalone calculated table called <code>Category Performance</code> with one row per product category, showing each category's Net Sales and Gross Margin %.</p>
-        <p class="ex-hint"><strong>Hint —</strong> VALUES gives you the one-row-per-category starting table; ADDCOLUMNS then evaluates your existing measures once per category, because each row of the new table carries its own category filter context.</p>
+        <p class="ex-question">Build a calculated table called <code>Category Performance</code>: one row per category, with Net Sales and Gross Margin %.</p>
+        <p class="ex-hint"><strong>Hint —</strong> VALUES gives you the one-row-per-category starting table; ADDCOLUMNS evaluates your measures once per row.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1306,17 +2370,707 @@ ADDCOLUMNS (
           </div>
         </div>
       </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Average and largest single-line sale</h3></div>
+        <p class="ex-question">Build <code>Average Line Profit</code> and <code>Largest Single Line Sale</code> — both need to look at Line Profit / Net Sales Amount row by row, not just totalled.</p>
+        <p class="ex-hint"><strong>Hint —</strong> AVERAGEX and MAXX iterate a table and evaluate your expression per row, then aggregate the results — unlike AVERAGE/MAX, which only read one existing column.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Average Line Profit = AVERAGEX ( Sales, Sales[Line Profit] )
+
+Largest Single Line Sale = MAXX ( Sales, Sales[Net Sales Amount] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">AVERAGEX</div>
+                <p>An iterator: evaluates an expression for every row of a table and returns the average of the results.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/averagex-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">MAXX</div>
+                <p>An iterator: evaluates an expression for every row of a table and returns the largest result.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/maxx-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Smallest non-zero discount</h3></div>
+        <p class="ex-question">Ignoring full-price lines, find the smallest discount percentage that was ever actually applied.</p>
+        <p class="ex-hint"><strong>Hint —</strong> MINX needs something to iterate — FILTER first narrows Sales down to only the rows where a discount was applied.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Smallest Non-Zero Discount =
+MINX (
+    FILTER ( Sales, Sales[DiscountPercent] &gt; 0 ),
+    Sales[DiscountPercent]
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">MINX</div>
+                <p>An iterator: evaluates an expression for every row of a table and returns the smallest result.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/minx-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">FILTER</div>
+                <p>Returns a smaller version of a table, keeping only the rows that pass a condition — typically used inside CALCULATE to build custom filter logic.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/filter-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Median line value</h3></div>
+        <p class="ex-question">A handful of very large bulk orders are skewing the average. Add a <code>Median Line Value</code> measure for a more typical figure.</p>
+        <p class="ex-hint"><strong>Hint —</strong> MEDIAN works like AVERAGE but returns the middle value instead of the mean — far less sensitive to a few big outliers.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Median Line Value = MEDIAN ( Sales[Net Sales Amount] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">MEDIAN</div>
+                <p>Returns the median (middle value) of a column — less sensitive to a few very large or small outliers than AVERAGE.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/median-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Sales last month, in full</h3></div>
+        <p class="ex-question">Build a comparison figure for the entire calendar month before whatever's currently in context — not a rolling 30 days.</p>
+        <p class="ex-hint"><strong>Hint —</strong> PREVIOUSMONTH returns the full previous calendar month as a set of dates.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales Last Month =
+CALCULATE (
+    [Completed Net Sales],
+    PREVIOUSMONTH ( &#x27;Date&#x27;[Date] )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">PREVIOUSMONTH</div>
+                <p>Returns the set of dates from the month immediately before whatever's in the current date filter.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/previousmonth-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Sales, prior full year</h3></div>
+        <p class="ex-question">Similar idea, one level up: total completed sales for the entire calendar year before the one in context.</p>
+        <p class="ex-hint"><strong>Hint —</strong> PREVIOUSYEAR is PREVIOUSMONTH's year-level sibling.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales Prior Year =
+CALCULATE (
+    [Completed Net Sales],
+    PREVIOUSYEAR ( &#x27;Date&#x27;[Date] )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">PREVIOUSYEAR</div>
+                <p>Returns the set of dates from the year immediately before whatever's in the current date filter.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/previousyear-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Quarter-to-date and month-to-date, the long way</h3></div>
+        <p class="ex-question">Before reaching for the TOTALQTD/TOTALMTD shortcuts in Advanced, build the same results by hand: <code>Sales QTD</code> and <code>Sales MTD</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> DATESQTD and DATESMTD each return a table of dates — pass that table into CALCULATE the same way you would any other date filter.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales QTD =
+CALCULATE ( [Completed Net Sales], DATESQTD ( &#x27;Date&#x27;[Date] ) )
+
+Sales MTD =
+CALCULATE ( [Completed Net Sales], DATESMTD ( &#x27;Date&#x27;[Date] ) )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DATESQTD</div>
+                <p>Returns the dates from the start of the current quarter up to the latest date in context — the table CALCULATE needs to build quarter-to-date measures manually.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/datesqtd-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DATESMTD</div>
+                <p>Returns the dates from the start of the current month up to the latest date in context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/datesmtd-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Same quarter last year, the flexible way</h3></div>
+        <p class="ex-question">Build the same-quarter-last-year comparison again, but this time using a function that could just as easily shift by 6 months or 2 years if the business ever asked for that.</p>
+        <p class="ex-hint"><strong>Hint —</strong> PARALLELPERIOD takes a number of periods and a period type (MONTH, QUARTER, YEAR) — shifting back 12 months lands you on the same quarter, a year earlier.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales Same Quarter Last Year =
+CALCULATE (
+    [Completed Net Sales],
+    PARALLELPERIOD ( &#x27;Date&#x27;[Date], -12, MONTH )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">PARALLELPERIOD</div>
+                <p>Shifts the current date filter by a specified number of periods (months, quarters, or years) — a more flexible, general-purpose alternative to SAMEPERIODLASTYEAR.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/parallelperiod-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Product cost tier</h3></div>
+        <p class="ex-question">Classify every product into <code>"Budget"</code> (under ₹1,000 cost), <code>"Mid-Range"</code> (under ₹10,000), or <code>"Premium"</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> SWITCH with TRUE() as its first argument lets you write a list of conditions top to bottom, like a cleaner stack of IFs.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Products[Cost Tier] =
+SWITCH (
+    TRUE (),
+    Products[Cost] &lt; 1000, &quot;Budget&quot;,
+    Products[Cost] &lt; 10000, &quot;Mid-Range&quot;,
+    &quot;Premium&quot;
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">SWITCH</div>
+                <p>Compares one expression against a list of possible values and returns the matching result — a cleaner alternative to nesting several IFs.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/switch-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Share of whatever's currently selected</h3></div>
+        <p class="ex-question">On a report page with a region slicer, show each store's share of sales relative to the selected regions — not the whole company.</p>
+        <p class="ex-hint"><strong>Hint —</strong> ALLSELECTED removes the visual's own filters but respects filters coming from outside it, like a slicer — exactly the “share of what's selected” behaviour a plain ALL can't give you.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Share of Selected Regions =
+DIVIDE (
+    [Completed Net Sales],
+    CALCULATE ( [Completed Net Sales], ALLSELECTED ( Stores ) )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">DIVIDE</div>
+                <p>Divides two numbers and lets you supply a fallback result — like 0 — for when the denominator is zero, instead of returning an error.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/divide-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">ALLSELECTED</div>
+                <p>Removes filters added by the visual itself, but keeps filters that came from outside it (like a page-level slicer) — used to calculate a share of ‘what's currently selected’ rather than a share of everything.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/allselected-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Region total, ignoring store-level filters</h3></div>
+        <p class="ex-question">On a table visual broken down by store, add a column-like measure that always shows that store's whole region total, regardless of which single store is in the row.</p>
+        <p class="ex-hint"><strong>Hint —</strong> ALLEXCEPT removes every filter on Stores except the one column you name — here, Region survives while StoreName is dropped.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Region Total (All Its Stores) =
+CALCULATE (
+    [Completed Net Sales],
+    ALLEXCEPT ( Stores, Stores[Region] )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">ALLEXCEPT</div>
+                <p>Removes every filter from a table except the columns you name — a shortcut for ‘keep this one filter, drop all the others on this table.’</p>
+                <a href="https://learn.microsoft.com/en-us/dax/allexcept-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Dynamic report title</h3></div>
+        <p class="ex-question">Build a text measure for a report page title: the store's name if exactly one is selected, or <code>"Multiple Stores"</code> otherwise.</p>
+        <p class="ex-hint"><strong>Hint —</strong> HASONEVALUE checks whether the current context has narrowed a column down to a single value before you try to display it.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Store Title =
+IF (
+    HASONEVALUE ( Stores[StoreName] ),
+    SELECTEDVALUE ( Stores[StoreName] ),
+    &quot;Multiple Stores&quot;
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">HASONEVALUE</div>
+                <p>Returns TRUE when exactly one distinct value of a column is visible in the current filter context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/hasonevalue-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">IF</div>
+                <p>Returns one value when a condition is TRUE and another when it's FALSE.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/if-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">SELECTEDVALUE</div>
+                <p>Returns the single value selected in a column when exactly one is in context, or a fallback (blank by default) when several are selected at once.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/selectedvalue-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Is a store filter active?</h3></div>
+        <p class="ex-question">Build a simple TRUE/FALSE measure that reports whether the Stores table is currently being filtered at all — useful for showing or hiding a warning message on a report.</p>
+        <p class="ex-hint"><strong>Hint —</strong> ISFILTERED checks for a direct filter on the column, whether or not it's narrowed things down to exactly one value.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Store Filter Active = ISFILTERED ( Stores[StoreName] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">ISFILTERED</div>
+                <p>Returns TRUE when a column or table is being filtered directly, whether or not that filter has narrowed it down to one value.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/isfiltered-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Sales within a category, filters intersected not replaced</h3></div>
+        <p class="ex-question">Build a measure that always shows Audio category sales, but should still respect a region slicer if one is applied — rather than silently overriding it.</p>
+        <p class="ex-hint"><strong>Hint —</strong> A plain CALCULATE filter argument would replace any existing filter on the same column, but here it's a different column (Category) — KEEPFILTERS makes the intersecting behaviour explicit and safe to reuse elsewhere.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Audio Category Sales (Keep Other Filters) =
+CALCULATE (
+    [Completed Net Sales],
+    KEEPFILTERS ( Products[Category] = &quot;Audio&quot; )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">KEEPFILTERS</div>
+                <p>Changes how a filter argument inside CALCULATE combines with existing filters — it intersects with them instead of replacing them outright.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/keepfilters-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Customer region via manual lookup</h3></div>
+        <p class="ex-question">Even though Sales already relates to Customers, practise the manual-lookup alternative: add a column on <strong>Sales</strong> called <code>Customer Region (Lookup)</code> using an exact-match lookup instead of the relationship.</p>
+        <p class="ex-hint"><strong>Hint —</strong> LOOKUPVALUE takes the column you want back, then pairs of (matching column, matching value) — it works even between tables that have no relationship at all.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales[Customer Region (Lookup)] =
+LOOKUPVALUE (
+    Customers[Region],
+    Customers[CustomerID], Sales[CustomerID]
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">LOOKUPVALUE</div>
+                <p>Looks up a value in another table by matching one or more column values exactly — works even without a modelled relationship between the tables.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/lookupvalue-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Has this line ever been returned?</h3></div>
+        <p class="ex-question">Add a column on <strong>Sales</strong> called <code>Has Been Returned</code> that checks the child Returns table for a match.</p>
+        <p class="ex-hint"><strong>Hint —</strong> RELATEDTABLE looks the opposite direction from RELATED — from the one-side row, it pulls back every matching row on the many-side as a table you can count.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales[Has Been Returned] =
+IF ( COUNTROWS ( RELATEDTABLE ( Returns ) ) &gt; 0, &quot;Yes&quot;, &quot;No&quot; )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">RELATEDTABLE</div>
+                <p>The reverse of RELATED: from a row on the ‘one’ side of a relationship, returns every matching row from the ‘many’ side as a table.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/relatedtable-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">COUNTROWS</div>
+                <p>Counts the number of rows in a table, rather than counting values in a specific column.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/countrows-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">IF</div>
+                <p>Returns one value when a condition is TRUE and another when it's FALSE.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/if-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Categories in the current view, as text</h3></div>
+        <p class="ex-question">Build a text measure listing every product category currently in filter context, comma-separated — handy for a dynamic chart subtitle.</p>
+        <p class="ex-hint"><strong>Hint —</strong> CONCATENATEX is CONCATENATE's iterating cousin: it joins an expression's result across every row of a table, with a delimiter you choose.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Categories In View =
+CONCATENATEX ( VALUES ( Products[Category] ), Products[Category], &quot;, &quot; )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CONCATENATEX</div>
+                <p>Joins the values of an expression across every row of a table into a single text value, with a delimiter you choose — a text-building iterator.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/concatenatex-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">VALUES</div>
+                <p>Returns the distinct values of a column as currently filtered — similar to DISTINCT, but respects the active filter context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/values-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Regional sales rollup</h3></div>
+        <p class="ex-question">Build a calculated table called <code>Regional Sales Rollup</code>: one row per region, with total completed net sales.</p>
+        <p class="ex-hint"><strong>Hint —</strong> SUMMARIZE can group a fact table directly by a related dimension column, and add a summary expression per group in the same step.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Regional Sales Rollup =
+SUMMARIZE (
+    Sales,
+    Stores[Region],
+    &quot;Net Sales&quot;, [Completed Net Sales]
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">SUMMARIZE</div>
+                <p>Groups a table by one or more columns and lets you add summary expressions per group — one of the main ways to build a calculated table.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/summarize-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Customers by segment and loyalty tier</h3></div>
+        <p class="ex-question">Build a calculated table called <code>Customer Segments</code> showing every combination of Customer Segment and Loyalty Tier, with a customer count for each.</p>
+        <p class="ex-hint"><strong>Hint —</strong> SUMMARIZE accepts more than one grouping column — you get one row per unique combination, not just per single column.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Customer Segments =
+SUMMARIZE (
+    Customers,
+    Customers[CustomerSegment], Customers[LoyaltyTier],
+    &quot;Customer Count&quot;, COUNTROWS ( Customers )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">SUMMARIZE</div>
+                <p>Groups a table by one or more columns and lets you add summary expressions per group — one of the main ways to build a calculated table.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/summarize-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">COUNTROWS</div>
+                <p>Counts the number of rows in a table, rather than counting values in a specific column.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/countrows-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Category performance, the engine's way</h3></div>
+        <p class="ex-question">Rebuild the Category Performance table from earlier, but this time using the function Power BI's own engine prefers internally.</p>
+        <p class="ex-hint"><strong>Hint —</strong> SUMMARIZECOLUMNS groups by the columns you list, then adds summary expressions — in one step, more efficiently than SUMMARIZE + ADDCOLUMNS. It's also the function you've already been using in every Bonus DAX query.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Category Performance (SUMMARIZECOLUMNS) =
+SUMMARIZECOLUMNS (
+    Products[Category],
+    &quot;Net Sales&quot;, [Completed Net Sales],
+    &quot;Gross Margin %&quot;, [Gross Margin %]
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">SUMMARIZECOLUMNS</div>
+                <p>The engine's preferred, higher-performance way to group and summarize — it groups by column, applies any filter tables, then adds summary expressions, all in one call.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/summarizecolumns-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>3-month moving average of sales</h3></div>
+        <p class="ex-question">Smooth out the daily noise in the sales trend with a rolling 3-month average, for a cleaner trend line.</p>
+        <p class="ex-hint"><strong>Hint —</strong> DATESINPERIOD builds the rolling window — counting backward 3 months from whatever date is currently at the end of context — then AVERAGEX averages the measure across each day in that window.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales 3-Month Moving Average =
+AVERAGEX (
+    DATESINPERIOD ( &#x27;Date&#x27;[Date], MAX ( &#x27;Date&#x27;[Date] ), -3, MONTH ),
+    [Completed Net Sales]
+)</pre>
+          </div>
+          <p class="solution-note">This is the standard pattern behind moving averages in DAX — swap AVERAGEX for SUMX for a rolling total instead of a rolling average.</p>
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">AVERAGEX</div>
+                <p>An iterator: evaluates an expression for every row of a table and returns the average of the results.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/averagex-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DATESINPERIOD</div>
+                <p>Returns a rolling window of dates: a starting date plus a number of intervals (days/months/quarters/years) forward or backward — the standard building block for moving averages.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/datesinperiod-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">MAX</div>
+                <p>Returns the largest value in a column for the current filter context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/max-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Quantity-weighted average discount</h3></div>
+        <p class="ex-question">A simple AVERAGE of DiscountPercent treats a 1-unit line the same as a 10-unit line. Build a properly weighted average discount instead.</p>
+        <p class="ex-hint"><strong>Hint —</strong> Each VAR below holds the result of its own SUMX iteration, so the RETURN line only has to combine two already-calculated numbers — combining variables with iterators.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Weighted Avg Discount % =
+VAR TotalDiscountValue =
+    SUMX ( Sales, Sales[Quantity] * Sales[DiscountPercent] )
+VAR TotalQty =
+    SUM ( Sales[Quantity] )
+RETURN
+    DIVIDE ( TotalDiscountValue, TotalQty )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">VAR / RETURN</div>
+                <p>Names an intermediate result inside a measure so it's calculated once and reused — purely for readability and performance.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/var-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">SUMX</div>
+                <p>An iterator: walks a table row by row, evaluates an expression for each row, then sums the results.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/sumx-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">SUM</div>
+                <p>Adds up every value in a column, ignoring blanks.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/sum-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DIVIDE</div>
+                <p>Divides two numbers and lets you supply a fallback result for when the denominator is zero, instead of returning an error.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/divide-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ============ ADVANCED ============ -->
     <section class="page" id="page-advanced">
       <h1 class="page-title">3 · Advanced</h1>
-      <p class="page-lede">Inactive relationships, a disconnected Targets table, running totals, and blank-aware logic — the patterns that separate a working model from a fragile one.</p>
+      <p class="page-lede">Inactive relationships, a disconnected Targets table, set operations across tables, dynamic table generation, and blank-aware logic — the patterns that separate a working model from a fragile one.</p>
       
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Sales trended by ship date, not order date</h3></div>
-        <p class="ex-question">Ops wants to see the same revenue figure trended by when items actually shipped, not when they were ordered — without breaking the OrderDate-based reports everyone else relies on.</p>
-        <p class="ex-hint"><strong>Hint —</strong> USERELATIONSHIP activates one of the inactive Date↔Sales relationships for just this one calculation, inside a CALCULATE.</p>
+        <p class="ex-question">Ops wants revenue trended by when items actually shipped, not when they were ordered — without breaking the OrderDate-based reports everyone else relies on.</p>
+        <p class="ex-hint"><strong>Hint —</strong> USERELATIONSHIP activates one of the inactive Date↔Sales relationships for just this one calculation.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1327,7 +3081,7 @@ CALCULATE (
     USERELATIONSHIP ( &#x27;Date&#x27;[Date], Sales[ShipDate] )
 )</pre>
           </div>
-          <p class="solution-note">Try it side by side with Total Net Sales on the same date axis — the two lines will drift apart around month boundaries, since a shipment can land a few days after the order.</p>
+          <p class="solution-note">Try it side by side with Total Net Sales on the same date axis — the two lines will drift apart around month boundaries.</p>
           
           <div class="fn-box">
             <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
@@ -1348,8 +3102,8 @@ CALCULATE (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge column">Calculated column</span><h3>On-time shipment flag</h3></div>
-        <p class="ex-question">For every Sales line, flag whether it shipped by its due date. Add a column called <code>On-Time Shipment</code> that returns <code>"On Time"</code> when ShipDate is on or before DueDate, and <code>"Late"</code> otherwise.</p>
-        <p class="ex-hint"><strong>Hint —</strong> This is a plain row-level comparison between two columns on the same table — no relationship or CALCULATE needed, just IF.</p>
+        <p class="ex-question">Flag whether each Sales line shipped by its due date. Add a column called <code>On-Time Shipment</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> A plain row-level comparison between two columns on the same table.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1373,8 +3127,8 @@ IF ( Sales[ShipDate] &lt;= Sales[DueDate], &quot;On Time&quot;, &quot;Late&quot;
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>This store's target for the selected month</h3></div>
-        <p class="ex-question">Targets has no relationship to Date at all — reach across to it manually. For the store and month currently in context, pull back its <code>SalesTarget</code>.</p>
-        <p class="ex-hint"><strong>Hint —</strong> SELECTEDVALUE(Stores[StoreID]) gets the single store in context (or blank if several are selected). MAX('Date'[Date]) gets the latest date in the current filter, from which you can pull year and month. FILTER + CALCULATE then does the manual lookup that a relationship would normally do for you.</p>
+        <p class="ex-question">Targets has no relationship to Date at all — reach across to it manually. For the store and month in context, pull back its <code>SalesTarget</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> SELECTEDVALUE gets the single store in context; MAX('Date'[Date]) gets the latest date in the current filter; FILTER + CALCULATE does the manual lookup a relationship would normally do for you.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1390,7 +3144,7 @@ CALCULATE (
     )
 )</pre>
           </div>
-          <p class="solution-note">This is the general pattern for bridging any disconnected table by matching keys inside CALCULATE — it works whether or not a relationship could exist.</p>
+          <p class="solution-note">This is the general pattern for bridging any disconnected table by matching keys inside CALCULATE.</p>
           
           <div class="fn-box">
             <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
@@ -1436,8 +3190,8 @@ CALCULATE (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Target attainment %</h3></div>
-        <p class="ex-question">Combine your actual sales and the target measure above into a single attainment percentage per store per month.</p>
-        <p class="ex-hint"><strong>Hint —</strong> Same DIVIDE pattern as earlier — the interesting part is what happens when you drop this on a matrix visual with Store on rows and Month on columns.</p>
+        <p class="ex-question">Combine actual sales and the target measure above into a single attainment percentage per store per month.</p>
+        <p class="ex-hint"><strong>Hint —</strong> Same DIVIDE pattern as earlier — the interesting part is what happens on a matrix visual with Store on rows and Month on columns.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1460,9 +3214,111 @@ DIVIDE ( [Completed Net Sales], [Store Target (Selected Month)] )</pre>
       </div>
 
       <div class="ex-card">
-        <div class="ex-head"><span class="badge measure">Measure</span><h3>Running total of sales</h3></div>
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Sales in a custom date window</h3></div>
+        <p class="ex-question">Finance wants a one-off figure: total completed sales between 1 October and 15 November 2024, regardless of whatever's selected on the report.</p>
+        <p class="ex-hint"><strong>Hint —</strong> DATE builds an exact date from year/month/day; DATESBETWEEN then returns every date in that closed range for CALCULATE to filter on.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Festive Window Sales =
+CALCULATE (
+    [Completed Net Sales],
+    DATESBETWEEN ( &#x27;Date&#x27;[Date], DATE ( 2024, 10, 1 ), DATE ( 2024, 11, 15 ) )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DATESBETWEEN</div>
+                <p>Returns the set of dates in a column that fall between two boundary dates you specify.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/datesbetween-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DATE</div>
+                <p>Constructs a date value from separate year, month, and day numbers.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/date-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Quarter-to-date and month-to-date, the shorthand way</h3></div>
+        <p class="ex-question">Rebuild the QTD/MTD measures from Intermediate as <code>Sales QTD (Shorthand)</code> and <code>Sales MTD (Shorthand)</code>, using the dedicated shortcut functions instead of DATESQTD/DATESMTD.</p>
+        <p class="ex-hint"><strong>Hint —</strong> TOTALQTD and TOTALMTD bundle the CALCULATE + DATESQTD/DATESMTD pattern into a single function call — same result, less code.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales QTD (Shorthand) = TOTALQTD ( [Completed Net Sales], &#x27;Date&#x27;[Date] )
+
+Sales MTD (Shorthand) = TOTALMTD ( [Completed Net Sales], &#x27;Date&#x27;[Date] )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">TOTALQTD</div>
+                <p>A time-intelligence shorthand that evaluates a measure from the start of the current quarter up to the latest date in context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/totalqtd-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">TOTALMTD</div>
+                <p>A time-intelligence shorthand that evaluates a measure from the start of the current month up to the latest date in context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/totalmtd-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Sales, shifted by a custom offset</h3></div>
+        <p class="ex-question">Build a comparison figure for exactly six months before whatever's in the current date context — a period length none of the built-in shortcuts cover.</p>
+        <p class="ex-hint"><strong>Hint —</strong> DATEADD is the general-purpose version of PARALLELPERIOD/SAMEPERIODLASTYEAR — you choose the number of intervals and the interval type yourself.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales 6 Months Earlier =
+CALCULATE (
+    [Completed Net Sales],
+    DATEADD ( &#x27;Date&#x27;[Date], -6, MONTH )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DATEADD</div>
+                <p>Shifts the current date filter forward or backward by a number of intervals (days, months, quarters, or years) — the general-purpose building block behind most time-intelligence shortcuts.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/dateadd-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Cumulative net sales</h3></div>
         <p class="ex-question">Build a cumulative revenue measure that keeps climbing across the whole date range, for a line chart that should never go down.</p>
-        <p class="ex-hint"><strong>Hint —</strong> FILTER(ALL('Date'), 'Date'[Date] <= MAX('Date'[Date])) rebuilds the date filter from scratch to mean "everything up to and including today's row" instead of "only today".</p>
+        <p class="ex-hint"><strong>Hint —</strong> FILTER(ALL('Date'), ...) rebuilds the date filter to mean “everything up to and including today's row” instead of “only today.”</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1504,8 +3360,8 @@ CALCULATE (
 
       <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Top 5 products, dynamically</h3></div>
-        <p class="ex-question">For whatever's currently in filter context (a region, a month, a store — anything), total the sales of just the top 5 products by revenue, not all of them.</p>
-        <p class="ex-hint"><strong>Hint —</strong> TOPN builds a temporary ranked table inside CALCULATE; ALL(Products) inside it prevents the visual's own product filter from shrinking that ranking pool down to one row.</p>
+        <p class="ex-question">For whatever's currently in filter context, total the sales of just the top 5 products by revenue.</p>
+        <p class="ex-hint"><strong>Hint —</strong> TOPN builds a temporary ranked table inside CALCULATE; ALL(Products) stops the visual's own product filter shrinking that ranking pool.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1541,9 +3397,42 @@ CALCULATE (
       </div>
 
       <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Store rank within its own region</h3></div>
+        <p class="ex-question">Rank each store against only the other stores in its region — not the whole company.</p>
+        <p class="ex-hint"><strong>Hint —</strong> ALLEXCEPT from Intermediate combines naturally with RANKX here: it narrows the ranking pool down to “just this region's stores” before RANKX compares them.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Store Rank Within Region =
+RANKX (
+    ALLEXCEPT ( Stores, Stores[Region] ),
+    [Completed Net Sales]
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">RANKX</div>
+                <p>Ranks a value produced by an expression against that same expression evaluated for every row of a table you supply.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/rankx-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">ALLEXCEPT</div>
+                <p>Removes every filter from a table except the columns you name — a shortcut for ‘keep this one filter, drop all the others on this table.’</p>
+                <a href="https://learn.microsoft.com/en-us/dax/allexcept-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
         <div class="ex-head"><span class="badge measure">Measure</span><h3>Promotion attach rate</h3></div>
         <p class="ex-question">Roughly two-thirds of Sales rows have a blank PromotionID. Build a measure for what percentage of completed line items actually used a promotion.</p>
-        <p class="ex-hint"><strong>Hint —</strong> ISBLANK checks PromotionID directly on Sales rather than assuming the Promotions relationship will filter it for you — a blank foreign key still matches nothing on the one side, but you need the count of blanks on the many side.</p>
+        <p class="ex-hint"><strong>Hint —</strong> ISBLANK checks PromotionID directly on Sales; a blank foreign key still matches nothing on the one side, but you need the count of blanks on the many side.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1560,7 +3449,7 @@ VAR CompletedLines =
 RETURN
     DIVIDE ( PromoLines, CompletedLines )</pre>
           </div>
-          <p class="solution-note">VAR/RETURN doesn't change the result here, but it makes a two-step calculation readable — and each VAR only evaluates once, however many times you reference it.</p>
+          <p class="solution-note">VAR/RETURN doesn't change the result here, but it makes a two-step calculation readable.</p>
           
           <div class="fn-box">
             <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
@@ -1595,9 +3484,431 @@ RETURN
       </div>
 
       <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Does this category exist at all?</h3></div>
+        <p class="ex-question">Before a chart tries to render a “Wearables vs. rest” comparison, add a guard measure that checks whether the Wearables category even exists in the catalogue.</p>
+        <p class="ex-hint"><strong>Hint —</strong> CONTAINS checks a table for a specific combination of column values and returns TRUE or FALSE — useful as a safety check before a calculation runs.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Wearables Category Exists =
+IF ( CONTAINS ( Products, Products[Category], &quot;Wearables&quot; ), &quot;Yes&quot;, &quot;No&quot; )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CONTAINS</div>
+                <p>Checks whether a table contains a row with a specific combination of column values, returning TRUE or FALSE — useful as a guard condition before a calculation runs.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/contains-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">IF</div>
+                <p>Returns one value when a condition is TRUE and another when it's FALSE.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/if-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Repeat customers (bought in both years)</h3></div>
+        <p class="ex-question">Build a calculated table called <code>Repeat Customers</code>: every CustomerID that placed a completed order in both 2023 and 2024.</p>
+        <p class="ex-hint"><strong>Hint —</strong> CALCULATETABLE filters VALUES down to one year's customer list at a time; INTERSECT then keeps only the IDs common to both lists.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Repeat Customers =
+INTERSECT (
+    CALCULATETABLE ( VALUES ( Sales[CustomerID] ), &#x27;Date&#x27;[Year] = 2023 ),
+    CALCULATETABLE ( VALUES ( Sales[CustomerID] ), &#x27;Date&#x27;[Year] = 2024 )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">INTERSECT</div>
+                <p>Returns only the rows that appear in both of two same-shaped tables — e.g. customers found in this year's list and last year's list.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/intersect-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">CALCULATETABLE</div>
+                <p>The table-returning counterpart to CALCULATE — evaluates a table expression inside a modified filter context, instead of a single value.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculatetable-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">VALUES</div>
+                <p>Returns the distinct values of a column as currently filtered — similar to DISTINCT, but respects the active filter context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/values-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Lapsed customers (2023 only)</h3></div>
+        <p class="ex-question">Build a calculated table called <code>Lapsed Customers</code>: customers who bought in 2023 but never came back in 2024.</p>
+        <p class="ex-hint"><strong>Hint —</strong> EXCEPT keeps rows from the first table that don't appear in the second — the mirror image of the INTERSECT exercise above.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Lapsed Customers =
+EXCEPT (
+    CALCULATETABLE ( VALUES ( Sales[CustomerID] ), &#x27;Date&#x27;[Year] = 2023 ),
+    CALCULATETABLE ( VALUES ( Sales[CustomerID] ), &#x27;Date&#x27;[Year] = 2024 )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">EXCEPT</div>
+                <p>Returns the rows from the first table that don't appear in the second — e.g. customers found last year but not this year.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/except-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">CALCULATETABLE</div>
+                <p>The table-returning counterpart to CALCULATE — evaluates a table expression inside a modified filter context, instead of a single value.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculatetable-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">VALUES</div>
+                <p>Returns the distinct values of a column as currently filtered — similar to DISTINCT, but respects the active filter context.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/values-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Combined region reference list</h3></div>
+        <p class="ex-question">Build a single calculated table called <code>All Regions</code> that stacks the distinct regions from Customers and the distinct regions from Stores into one list.</p>
+        <p class="ex-hint"><strong>Hint —</strong> UNION simply stacks two same-shaped tables — duplicates aren't automatically removed, so wrap it in DISTINCT if you need a clean, deduplicated list.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>All Regions =
+DISTINCT (
+    UNION (
+        DISTINCT ( Customers[Region] ),
+        DISTINCT ( Stores[Region] )
+    )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">UNION</div>
+                <p>Stacks two or more same-shaped tables on top of each other into one combined table.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/union-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DISTINCT</div>
+                <p>Returns a one-column table of the unique values found in a column, with duplicates removed.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/distinct-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Company-wide sales, ignoring the Promotions filter entirely</h3></div>
+        <p class="ex-question">On a report page built around browsing individual promotions, add a KPI that always shows total company sales — regardless of which promotion is selected.</p>
+        <p class="ex-hint"><strong>Hint —</strong> REMOVEFILTERS is the modern, explicitly-named equivalent of ALL when all you want to say is “clear this table's filters.”</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Company Sales (Ignore Promotions) =
+CALCULATE (
+    [Completed Net Sales],
+    REMOVEFILTERS ( Promotions )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">REMOVEFILTERS</div>
+                <p>Clears filters from a table or column entirely — a more explicitly named, modern alternative to ALL.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/removefilters-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Promotions actually used this month</h3></div>
+        <p class="ex-question">Count how many distinct promotions had at least one sale attached to them in the current month — filtering Promotions from the Sales side, which the relationship doesn't do by default.</p>
+        <p class="ex-hint"><strong>Hint —</strong> The Promotions→Sales relationship only filters one direction by default. CROSSFILTER temporarily makes it two-way for this one calculation, so a Sales-side filter can narrow down Promotions too.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Promotions Used This Month =
+CALCULATE (
+    DISTINCTCOUNT ( Promotions[PromotionID] ),
+    CROSSFILTER ( Promotions[PromotionID], Sales[PromotionID], BOTH )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATE</div>
+                <p>Evaluates an expression inside a modified filter context. It's the function almost every other measure in this course is built around.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DISTINCTCOUNT</div>
+                <p>Counts how many distinct, non-blank values appear in a column.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/distinctcount-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">CROSSFILTER</div>
+                <p>Temporarily changes the filtering direction or behaviour of a relationship for the duration of one calculation, without editing the relationship itself.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/crossfilter-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Region label with a safe fallback</h3></div>
+        <p class="ex-question">Even though every customer in this dataset has a Region, defend against future messy imports: add a column called <code>Region (Safe)</code> that falls back to <code>"Unknown Region"</code> if it's ever blank.</p>
+        <p class="ex-hint"><strong>Hint —</strong> COALESCE checks its arguments in order and returns the first one that isn't blank.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Customers[Region (Safe)] = COALESCE ( Customers[Region], &quot;Unknown Region&quot; )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">COALESCE</div>
+                <p>Returns the first argument that isn't blank, checked in order — a defensive way to supply a fallback for messy or incomplete source data.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/coalesce-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>VIP flag</h3></div>
+        <p class="ex-question">Flag customers as <code>"VIP"</code> only when they're both Platinum tier <em>and</em> Enterprise segment; everyone else is <code>"Standard"</code>.</p>
+        <p class="ex-hint"><strong>Hint —</strong> AND takes exactly two conditions and requires both to be TRUE — the function form of the && operator, useful when you want the logic spelled out explicitly.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Customers[VIP Flag] =
+IF (
+    AND ( Customers[LoyaltyTier] = &quot;Platinum&quot;, Customers[CustomerSegment] = &quot;Enterprise&quot; ),
+    &quot;VIP&quot;, &quot;Standard&quot;
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">AND</div>
+                <p>Returns TRUE only when both of two conditions are TRUE. Inside an IF, the && operator does the same job for exactly two conditions.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/and-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">IF</div>
+                <p>Returns one value when a condition is TRUE and another when it's FALSE.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/if-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge column">Calculated column</span><h3>Rush review flag</h3></div>
+        <p class="ex-question">Flag a Sales line for manual review if it's either a bulk order (quantity 5 or more) <em>or</em> carries a steep discount (20% or more).</p>
+        <p class="ex-hint"><strong>Hint —</strong> OR is AND's counterpart — only one of the two conditions needs to be TRUE.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales[Rush Review] =
+IF (
+    OR ( Sales[Quantity] &gt;= 5, Sales[DiscountPercent] &gt;= 0.2 ),
+    &quot;Review&quot;, &quot;Standard&quot;
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">OR</div>
+                <p>Returns TRUE when at least one of two conditions is TRUE. The || operator does the same job for exactly two conditions.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/or-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">IF</div>
+                <p>Returns one value when a condition is TRUE and another when it's FALSE.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/if-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Is any promotion filter active?</h3></div>
+        <p class="ex-question">Build a TRUE/FALSE measure a report can use to switch its wording, depending on whether Promotions is being filtered at all — directly or indirectly through Sales.</p>
+        <p class="ex-hint"><strong>Hint —</strong> ISCROSSFILTERED is broader than ISFILTERED: it also catches an indirect filter arriving through a relationship, not just a filter placed straight on the table.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Promotions Filter Active = ISCROSSFILTERED ( Promotions )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">ISCROSSFILTERED</div>
+                <p>Returns TRUE when a table is being filtered, either directly or indirectly through a relationship from another table — broader than ISFILTERED.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/iscrossfiltered-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>2024 completed sales only</h3></div>
+        <p class="ex-question">Build a filtered calculated table called <code>Sales 2024 Completed</code>, containing only completed Sales rows from 2024 — useful as a lightweight base table for a dedicated report page.</p>
+        <p class="ex-hint"><strong>Hint —</strong> CALCULATETABLE is CALCULATE's table-returning sibling: same filter-context idea, but it hands back a whole table instead of one number.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales 2024 Completed =
+CALCULATETABLE (
+    Sales,
+    Sales[OrderStatus] = &quot;Completed&quot;,
+    YEAR ( Sales[OrderDate] ) = 2024
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CALCULATETABLE</div>
+                <p>The table-returning counterpart to CALCULATE — evaluates a table expression inside a modified filter context, instead of a single value.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculatetable-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">YEAR</div>
+                <p>Extracts the year number from a date value.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/year-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Price band parameter table</h3></div>
+        <p class="ex-question">Build a standalone calculated table called <code>Price Bands</code>: a simple numeric sequence from 0 to 50,000 in steps of 5,000, ready to drive a what-if price-band slicer.</p>
+        <p class="ex-hint"><strong>Hint —</strong> GENERATESERIES needs a start, an end, and a step — nothing else.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Price Bands = GENERATESERIES ( 0, 50000, 5000 )</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">GENERATESERIES</div>
+                <p>Builds a single-column table of evenly spaced numbers between a start and end value — commonly used for what-if parameters or bucket boundaries.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/generateseries-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Category → sub-category expansion</h3></div>
+        <p class="ex-question">Build a calculated table called <code>Category Tree</code> listing every category alongside each of its sub-categories.</p>
+        <p class="ex-hint"><strong>Hint —</strong> GENERATE evaluates its second table expression once per row of the first table, inside that row's filter context — so CALCULATETABLE(DISTINCT(...)) picks up only the matching sub-categories for each category as it goes.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Category Tree =
+GENERATE (
+    DISTINCT ( Products[Category] ),
+    CALCULATETABLE ( DISTINCT ( Products[SubCategory] ) )
+)</pre>
+          </div>
+          
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">GENERATE</div>
+                <p>For every row of one table, evaluates a second table expression in that row's context and joins the results — the standard way to expand a table row by row into related detail.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/generate-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">CALCULATETABLE</div>
+                <p>The table-returning counterpart to CALCULATE — evaluates a table expression inside a modified filter context, instead of a single value.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/calculatetable-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">DISTINCT</div>
+                <p>Returns a one-column table of the unique values found in a column, with duplicates removed.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/distinct-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
         <div class="ex-head"><span class="badge table">Calculated table</span><h3>Store attainment league table</h3></div>
-        <p class="ex-question">Bring everything from this section together into one calculated table called <code>Store Attainment</code>: one row per store, showing Actual Sales, Target, and Attainment %.</p>
-        <p class="ex-hint"><strong>Hint —</strong> Same ADDCOLUMNS + VALUES pattern as the Category Performance table in Intermediate — except this time each row's measures depend on the disconnected Targets bridge you built earlier in this section.</p>
+        <p class="ex-question">Bring the section together into one calculated table called <code>Store Attainment</code>: one row per store, showing Actual Sales, Target, and Attainment %.</p>
+        <p class="ex-hint"><strong>Hint —</strong> Same ADDCOLUMNS + VALUES pattern as the Category Performance table in Intermediate — except each row's measures depend on the disconnected Targets bridge you built earlier.</p>
         <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
         <div class="solution">
           <div class="code-box">
@@ -1624,6 +3935,78 @@ ADDCOLUMNS (
                 <div class="fn-name">VALUES</div>
                 <p>Returns the distinct values of a column as currently filtered — similar to DISTINCT, but respects the active filter context.</p>
                 <a href="https://learn.microsoft.com/en-us/dax/values-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge measure">Measure</span><h3>Fiscal year-to-date sales</h3></div>
+        <p class="ex-question">RR Retail's fiscal year runs 1 April to 31 March, not the calendar year. Build a <code>Sales Fiscal YTD</code> measure that resets every 1 April instead of every 1 January.</p>
+        <p class="ex-hint"><strong>Hint —</strong> TOTALYTD takes an optional third argument: the fiscal year-end date, as "MM/DD". Passing "3/31" tells it the year resets the day after 31 March — no separate fiscal date table needed for this pattern.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Sales Fiscal YTD =
+TOTALYTD (
+    [Completed Net Sales],
+    &#x27;Date&#x27;[Date],
+    &quot;3/31&quot;
+)</pre>
+          </div>
+          <p class="solution-note">For heavier fiscal reporting, most real models instead build a proper fiscal calendar with its own FiscalYear/FiscalQuarter columns — which your Date table already has, ready for exactly that.</p>
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">TOTALYTD</div>
+                <p>A time-intelligence shorthand that evaluates a measure from the start of the current year up to the latest date in context. Takes an optional fiscal year-end date as a third argument.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/totalytd-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-head"><span class="badge table">Calculated table</span><h3>Whitespace: store/category pairs with zero sales</h3></div>
+        <p class="ex-question">Category management wants to see every Store-Category combination that has <em>never</em> had a single completed sale — classic “whitespace” analysis for deciding where to push a product line.</p>
+        <p class="ex-hint"><strong>Hint —</strong> CROSSJOIN builds every possible Store × Category pairing that could exist; EXCEPT then removes any pairing that actually shows up in a similarly-shaped table built from real Sales rows, leaving only the gaps.</p>
+        <button class="reveal-btn" onclick="toggleReveal(this)">Show solution</button>
+        <div class="solution">
+          <div class="code-box">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre>Store Category Whitespace =
+EXCEPT (
+    CROSSJOIN ( VALUES ( Stores[StoreName] ), VALUES ( Products[Category] ) ),
+    SUMMARIZECOLUMNS ( Stores[StoreName], Products[Category] )
+)</pre>
+          </div>
+          <p class="solution-note">SUMMARIZECOLUMNS here only returns combinations that actually have at least one matching Sales row — that asymmetry with CROSSJOIN's ‘every possible pairing’ is exactly what makes EXCEPT surface the whitespace.</p>
+          
+          <div class="fn-box">
+            <div class="fn-box-label">Concepts &amp; functions used in this solution</div>
+            
+              <div class="fn-item">
+                <div class="fn-name">CROSSJOIN</div>
+                <p>Returns the Cartesian product of two or more tables — every possible combination of rows between them.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/crossjoin-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">EXCEPT</div>
+                <p>Returns the rows from the first table that don't appear in the second.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/except-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">VALUES</div>
+                <p>Returns the distinct values of a column as currently filtered.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/values-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
+              </div>
+              <div class="fn-item">
+                <div class="fn-name">SUMMARIZECOLUMNS</div>
+                <p>The engine's preferred, higher-performance way to group and summarize — it groups by column, applies any filter tables, then adds summary expressions, all in one call.</p>
+                <a href="https://learn.microsoft.com/en-us/dax/summarizecolumns-function-dax" target="_blank" rel="noopener">Official reference on Microsoft Learn &#8599;</a>
               </div>
           </div>
         </div>
@@ -1749,8 +4132,8 @@ RETURN
   </div>
 
   <footer class="sitefoot">
-    Part of <strong>RR Skillverse</strong> — free Microsoft technology learning · <a href="https://rrskillverse.in" target="_blank" rel="noopener">rrskillverse.in</a><br>
-    Written by Raushan Ranjan · Any questions? Please ask before proceeding to the next exercise.
+    Part of <strong>RR Skillverse</strong> — free Microsoft technology learning<br>
+    Any questions? Please ask before proceeding.
   </footer>
 </div>
 
