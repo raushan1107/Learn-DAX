@@ -699,6 +699,10 @@
       <div class="navitem" data-page="advanced"><span class="num">3</span> Advanced</div>
     </div>
     <div class="navgroup">
+      <div class="navgroup-label">PRACTICE SHEETS</div>
+      <div class="navitem" data-page="exercise-01"><span class="num">📝</span> Exercise 01 - DAX</div>
+    </div>
+    <div class="navgroup">
       <div class="navgroup-label">KEEP GOING</div>
       <div class="navitem" data-page="bonus"><span class="num">★</span> Bonus DAX playground</div>
     </div>
@@ -4391,6 +4395,255 @@ EXCEPT (
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- ============ EXERCISE 01 ============ -->
+    <section class="page" id="page-exercise-01">
+      <h1 class="page-title">Exercise 01 · DAX Practice Sheet</h1>
+      <p class="page-lede">50 unguided questions, grouped by technique, and nothing else — no hints, no worked solutions. Hand this page to a student once they've been through Fundamentals and Intermediate, and have them write the actual DAX for every question against the RR Retail Analytics model.</p>
+
+      <div class="callout warn">
+        <strong>How to use this sheet</strong>
+        Each question names a real business question, not a function. Work out which measure, column, or filter answers it, then write and test the DAX yourself in Power BI — there is no reveal button on this page. Check a question off once you're confident your DAX is correct.
+      </div>
+
+      
+      <h3 class="sub-h">Aggregation</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">SUM, AVERAGE, MIN, MAX, COUNT-family functions.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c1">
+            <label for="ex01-c1"><span class="challenge-num">1.</span> What is the total net revenue generated across all 12 stores combined, for completed orders only?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c2">
+            <label for="ex01-c2"><span class="challenge-num">2.</span> What is the average ListPrice of every product in the catalogue?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c3">
+            <label for="ex01-c3"><span class="challenge-num">3.</span> What is the highest SalesTarget ever set for a single store in a single month?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c4">
+            <label for="ex01-c4"><span class="challenge-num">4.</span> What is the total SquareFootage of every “Outlet” type store combined?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c5">
+            <label for="ex01-c5"><span class="challenge-num">5.</span> How many distinct customers have ever placed a completed order?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c6">
+            <label for="ex01-c6"><span class="challenge-num">6.</span> What is the lowest Cost recorded for any product in the “Home Appliances” category?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c7">
+            <label for="ex01-c7"><span class="challenge-num">7.</span> How many Sales rows have a non-blank PromotionID?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c8">
+            <label for="ex01-c8"><span class="challenge-num">8.</span> What is the total ReturnQuantity recorded across every entry in the Returns table?</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Arithmetic</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">Row-level and aggregate calculations — margins, ratios, and derived values.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c9">
+            <label for="ex01-c9"><span class="challenge-num">9.</span> Calculate the profit margin (ListPrice minus Cost, divided by ListPrice) for every product, and find which single product has the highest margin.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c10">
+            <label for="ex01-c10"><span class="challenge-num">10.</span> For every Sales line, calculate the net value after discount, then find the single highest-value line in the whole dataset.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c11">
+            <label for="ex01-c11"><span class="challenge-num">11.</span> Work out the total number of days each store has been open, counting from its OpenDate up to 31 December 2024.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c12">
+            <label for="ex01-c12"><span class="challenge-num">12.</span> Calculate the average selling price per unit (net sales amount divided by quantity) across every completed Sales line.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c13">
+            <label for="ex01-c13"><span class="challenge-num">13.</span> Work out how much total discount value, in rupees rather than percentage, was given away across every Sales line in 2024.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c14">
+            <label for="ex01-c14"><span class="challenge-num">14.</span> Calculate what percentage of the entire product catalogue's combined list price is made up by the “Computing” category alone.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c15">
+            <label for="ex01-c15"><span class="challenge-num">15.</span> For every store, calculate revenue per square foot — total net sales divided by SquareFootage — and find the most space-efficient store.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c16">
+            <label for="ex01-c16"><span class="challenge-num">16.</span> Calculate the average number of days between a customer's JoinDate and their very first completed order.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Logic</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">IF, SWITCH, and other conditional branching.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c17">
+            <label for="ex01-c17"><span class="challenge-num">17.</span> Classify every product as “Above Average Price” or “Below Average Price” compared to the catalogue-wide average ListPrice.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c18">
+            <label for="ex01-c18"><span class="challenge-num">18.</span> Flag every Sales line as “Discounted” or “Full Price” depending on whether DiscountPercent is greater than zero.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c19">
+            <label for="ex01-c19"><span class="challenge-num">19.</span> Build a classification that labels every store as “Large” (SquareFootage over 3,000), “Medium” (1,800–3,000), or “Small” (under 1,800).</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c20">
+            <label for="ex01-c20"><span class="challenge-num">20.</span> Flag every customer as “New” if their JoinDate falls in 2024, or “Existing” otherwise.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c21">
+            <label for="ex01-c21"><span class="challenge-num">21.</span> Identify every Sales line where the order was cancelled <em>and</em> a promotion was still attached to it.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c22">
+            <label for="ex01-c22"><span class="challenge-num">22.</span> Flag every product where the Cost is more than half of the ListPrice, as “Thin Margin”.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c23">
+            <label for="ex01-c23"><span class="challenge-num">23.</span> Determine whether each Return was filed within 5 days of the original OrderDate, or later.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c24">
+            <label for="ex01-c24"><span class="challenge-num">24.</span> Flag every store as “Above Target” or “Below Target” for a given month by comparing its actual sales to its SalesTarget.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Calculate</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">CALCULATE and modified filter context.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c25">
+            <label for="ex01-c25"><span class="challenge-num">25.</span> Find the total net sales for the “Gurugram Cyber City” store only, regardless of any other filter that might be applied elsewhere on a report.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c26">
+            <label for="ex01-c26"><span class="challenge-num">26.</span> Find total net sales for orders that were both “Completed” and placed using a promotion in the “Both” channel.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c27">
+            <label for="ex01-c27"><span class="challenge-num">27.</span> Find the total net sales generated by customers in the “Enterprise” segment only.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c28">
+            <label for="ex01-c28"><span class="challenge-num">28.</span> Find total net sales for the “Wearables” category, ignoring any store filter that might otherwise apply.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c29">
+            <label for="ex01-c29"><span class="challenge-num">29.</span> Find the total quantity sold of products that cost RR Retail more than ₹10,000 to source.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c30">
+            <label for="ex01-c30"><span class="challenge-num">30.</span> Find total completed net sales for customers who joined in 2022 or earlier.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c31">
+            <label for="ex01-c31"><span class="challenge-num">31.</span> Find the total returned quantity for products in the “Mobile” category specifically.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c32">
+            <label for="ex01-c32"><span class="challenge-num">32.</span> Find total net sales across every store except the two flagship stores.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c33">
+            <label for="ex01-c33"><span class="challenge-num">33.</span> Find the total sales value of all lines where a promotion was used, but the customer was not on the Platinum tier.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Calendar, date, month & year formatting</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">Working with the Date table and date-valued columns.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c34">
+            <label for="ex01-c34"><span class="challenge-num">34.</span> Build a column that shows every product's LaunchDate formatted as “MMM YYYY”, for example “Oct 2023”.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c35">
+            <label for="ex01-c35"><span class="challenge-num">35.</span> Find how many Sales orders were placed on a weekend — Saturday or Sunday.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c36">
+            <label for="ex01-c36"><span class="challenge-num">36.</span> Find which calendar month, across both years combined, had the highest number of completed orders.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c37">
+            <label for="ex01-c37"><span class="challenge-num">37.</span> Build a column that extracts just the year from every customer's JoinDate.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c38">
+            <label for="ex01-c38"><span class="challenge-num">38.</span> Find the total net sales for the very last day of every month across the whole dataset.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c39">
+            <label for="ex01-c39"><span class="challenge-num">39.</span> Work out how many unique calendar quarters are represented in the Sales table.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c40">
+            <label for="ex01-c40"><span class="challenge-num">40.</span> Build a column showing each Sales row's order date as a full day name, for example “Monday”.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c41">
+            <label for="ex01-c41"><span class="challenge-num">41.</span> Find the total number of Sales rows whose OrderDate falls in October or November of either year.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c42">
+            <label for="ex01-c42"><span class="challenge-num">42.</span> Determine how many products were launched in the same calendar month as their LaunchDate's corresponding month-end date.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Iterator</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">SUMX, AVERAGEX, MAXX, MINX, RANKX — row-by-row evaluation.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c43">
+            <label for="ex01-c43"><span class="challenge-num">43.</span> For every Sales line, multiply Quantity by UnitPrice, then find the sum of that across the whole table without using a calculated column.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c44">
+            <label for="ex01-c44"><span class="challenge-num">44.</span> Find the average of (Quantity × DiscountPercent) across every Sales line, calculated row by row.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c45">
+            <label for="ex01-c45"><span class="challenge-num">45.</span> Find the store with the single highest average order value, by evaluating average value per store one at a time.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c46">
+            <label for="ex01-c46"><span class="challenge-num">46.</span> Work out the total profit — Net Sales Amount minus Cost × Quantity — for every Sales line combined, row by row.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c47">
+            <label for="ex01-c47"><span class="challenge-num">47.</span> Find the single Sales line with the smallest gap between its ShipDate and DueDate.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c48">
+            <label for="ex01-c48"><span class="challenge-num">48.</span> Calculate the total value of the product catalogue, where each product's contribution is (ListPrice minus Cost) multiplied by however many times it was ordered.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c49">
+            <label for="ex01-c49"><span class="challenge-num">49.</span> Rank every customer by their total lifetime spend, evaluated one customer at a time.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex01-c50">
+            <label for="ex01-c50"><span class="challenge-num">50.</span> Find the total combined SalesTarget across every store, for every month where that store's actual sales fell short of its target.</label>
+          </div>
+      </div>
+
     </section>
 
     <!-- ============ BONUS ============ -->
