@@ -86,7 +86,16 @@
     padding:14px 12px;
     overflow-y:auto;
     flex:1 1 auto;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,0.22) transparent;
   }
+  nav.navlist::-webkit-scrollbar{width:6px;}
+  nav.navlist::-webkit-scrollbar-track{background:transparent;}
+  nav.navlist::-webkit-scrollbar-thumb{
+    background:rgba(255,255,255,0.22);
+    border-radius:10px;
+  }
+  nav.navlist::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.38);}
   .navgroup{margin-bottom:18px;}
   .navgroup-label{
     font-size:11px;
@@ -716,6 +725,7 @@
     <div class="navgroup">
       <div class="navgroup-label">PRACTICE SHEETS</div>
       <div class="navitem" data-page="exercise-01"><span class="num">📝</span> Exercise 01 - DAX</div>
+      <div class="navitem" data-page="exercise-02"><span class="num">📝</span> Exercise 02 - DAX</div>
     </div>
     <div class="navgroup">
       <div class="navgroup-label">KEEP GOING</div>
@@ -730,7 +740,7 @@
 <div class="main">
   <header class="topbar">
     <div class="topbar-inner">
-      <button class="navbar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">&#9776;</button>
+      <button class="navbar-toggle" onclick="toggleSidebar()" aria-label="Collapse navigation">&#9664;</button>
       <h2>Let's Learn DAX<span class="pill">Power BI · Data Modelling · DAX</span></h2>
     </div>
   </header>
@@ -4661,6 +4671,261 @@ EXCEPT (
 
     </section>
 
+    <!-- ============ EXERCISE 02 ============ -->
+    <section class="page" id="page-exercise-02">
+      <h1 class="page-title">Exercise 02 · DAX Practice Sheet</h1>
+      <p class="page-lede">A second unguided practice sheet, one level up from Exercise 01 — table-shaping functions, filter propagation, fiscal-year handling, blanks, variables combined with iterators, and lookups. No hints, no worked solutions.</p>
+
+      <div class="callout warn">
+        <strong>How to use this sheet</strong>
+        Same rules as Exercise 01: each question is a business question, not a function name. Work out the right measure, column, or table yourself and test it in Power BI against the RR Retail Analytics model. Check a question off once you're confident your DAX is correct.
+      </div>
+
+      
+      <h3 class="sub-h">Table functions & shaping</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">FILTER, ALL, VALUES, DISTINCT, SUMMARIZE, ADDCOLUMNS, CROSSJOIN, RELATEDTABLE, SUMMARIZECOLUMNS.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c1">
+            <label for="ex02-c1"><span class="challenge-num">1.</span> Build a table listing every Sales line where Quantity is 3 or more, showing SalesID, ProductID, and Quantity only.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c2">
+            <label for="ex02-c2"><span class="challenge-num">2.</span> Find total net sales for the whole company, deliberately ignoring any Store filter that might be applied elsewhere on a report.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c3">
+            <label for="ex02-c3"><span class="challenge-num">3.</span> Build a one-column table of every distinct Region that appears in the Stores table.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c4">
+            <label for="ex02-c4"><span class="challenge-num">4.</span> Build a table of every unique combination of Category and SubCategory found in the Products table.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c5">
+            <label for="ex02-c5"><span class="challenge-num">5.</span> Build a summary table with one row per Store, showing total completed net sales and total returned quantity for each.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c6">
+            <label for="ex02-c6"><span class="challenge-num">6.</span> Take the Products table and add two new columns to it — Profit Margin and a Price Tier label — without altering the original table.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c7">
+            <label for="ex02-c7"><span class="challenge-num">7.</span> Build a table showing every possible pairing of Store and Promotion, whether or not that pairing has ever actually occurred in Sales.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c8">
+            <label for="ex02-c8"><span class="challenge-num">8.</span> For a given customer, build a table of every Return that customer has ever filed, by reaching from Customers down through Sales.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c9">
+            <label for="ex02-c9"><span class="challenge-num">9.</span> Build a summary table with one row per Region and one row per Year, showing total net sales for each combination, using the function Power BI's engine prefers internally.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c10">
+            <label for="ex02-c10"><span class="challenge-num">10.</span> Build a table of every product that has never appeared in a single completed Sales line.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c11">
+            <label for="ex02-c11"><span class="challenge-num">11.</span> Build a table showing, for each Store Type, its average order value and its total number of completed orders.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Filter context & propagation</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">ALLEXCEPT, ALLSELECTED, CROSSFILTER, filter propagation, one-to-many vs. many-to-one, combining FILTER with CALCULATE.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c12">
+            <label for="ex02-c12"><span class="challenge-num">12.</span> On a table visual broken down by individual store, show each row's whole-region total instead of just that one store's number.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c13">
+            <label for="ex02-c13"><span class="challenge-num">13.</span> On a report page with a Category slicer, show each product's share of sales relative only to the categories currently selected, not the entire catalogue.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c14">
+            <label for="ex02-c14"><span class="challenge-num">14.</span> Find how many distinct Promotions have at least one Sales line attached to them this year, filtering from the Sales side even though the modelled relationship only flows the other way by default.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c15">
+            <label for="ex02-c15"><span class="challenge-num">15.</span> Build a measure that demonstrates what happens when Sales is filtered directly — does that automatically narrow which rows appear in a Stores-only visual in this model?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c16">
+            <label for="ex02-c16"><span class="challenge-num">16.</span> Build a measure that only returns a result once a Store filter has narrowed the Region down to a single value.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c17">
+            <label for="ex02-c17"><span class="challenge-num">17.</span> Build a measure for total net sales that keeps every other slicer active but always ignores whatever's selected on a Loyalty Tier slicer specifically.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c18">
+            <label for="ex02-c18"><span class="challenge-num">18.</span> Find total net sales for every Sales line where Quantity is above the table-wide average Quantity — a condition a simple CALCULATE filter argument alone can't express.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c19">
+            <label for="ex02-c19"><span class="challenge-num">19.</span> Build a measure for total net sales on products above ₹5,000 in cost, restricted to whichever region is currently selected — combining a custom row-level condition with a modified filter context in the same measure.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c20">
+            <label for="ex02-c20"><span class="challenge-num">20.</span> Find total completed net sales for every store whose StoreType is not “Outlet”, using a condition on the column itself rather than a fixed list of store names.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c21">
+            <label for="ex02-c21"><span class="challenge-num">21.</span> Build a measure that shows a region's total net sales, respecting a Loyalty Tier slicer but ignoring any more specific store selected within the same visual.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Time intelligence & fiscal years</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">Moving averages, fiscal-year handling, DATESBETWEEN, DATEADD.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c22">
+            <label for="ex02-c22"><span class="challenge-num">22.</span> Build a 7-day moving average of daily completed net sales.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c23">
+            <label for="ex02-c23"><span class="challenge-num">23.</span> Build a fiscal-year-to-date sales measure, where RR Retail's fiscal year starts on 1 April.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c24">
+            <label for="ex02-c24"><span class="challenge-num">24.</span> Find total completed net sales for the fixed window between 15 December 2023 and 5 January 2024, regardless of what's selected elsewhere on the report.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c25">
+            <label for="ex02-c25"><span class="challenge-num">25.</span> Build a measure comparing current sales to sales exactly one fiscal quarter earlier, shifting by a specific number of periods rather than using a named shortcut like SAMEPERIODLASTYEAR.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c26">
+            <label for="ex02-c26"><span class="challenge-num">26.</span> Build a 3-month moving average of the number of completed orders, not just their value.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c27">
+            <label for="ex02-c27"><span class="challenge-num">27.</span> Determine which fiscal year — FY2023, FY2024, or FY2025 — has captured the fewest calendar days so far in this dataset.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c28">
+            <label for="ex02-c28"><span class="challenge-num">28.</span> Build a measure for the change in fiscal-year-to-date sales compared to the same point in the previous fiscal year.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c29">
+            <label for="ex02-c29"><span class="challenge-num">29.</span> Build a rolling 30-day total of returned quantity, ending on whatever date is latest in the current filter context.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Blanks, defaults & data quality</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">BLANK, ISBLANK(), COALESCE.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c30">
+            <label for="ex02-c30"><span class="challenge-num">30.</span> Build a measure that returns nothing at all — not a zero — for any store that has made no sales at all this month.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c31">
+            <label for="ex02-c31"><span class="challenge-num">31.</span> Count how many Sales rows would return a blank if you tried to look up their Promotion's DiscountPercent.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c32">
+            <label for="ex02-c32"><span class="challenge-num">32.</span> Build a column that displays a customer's LoyaltyTier, but falls back to a default label if that value were ever missing.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c33">
+            <label for="ex02-c33"><span class="challenge-num">33.</span> Build a measure that passes an open-ended lower boundary into a date-range filter, letting it include every date up to a fixed end date with no explicit start date.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c34">
+            <label for="ex02-c34"><span class="challenge-num">34.</span> Build a measure that checks whether a specific product's Cost is missing, and returns a warning label if so.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c35">
+            <label for="ex02-c35"><span class="challenge-num">35.</span> Build a column that provides a safe fallback for a customer's Region, in case a future data load ever leaves it empty.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Variables & iterators</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">VAR, RETURN, and combining variables with iterators.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c36">
+            <label for="ex02-c36"><span class="challenge-num">36.</span> Using a variable to hold an iterator's result first, build a measure for the average profit per order across all completed Sales lines.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c37">
+            <label for="ex02-c37"><span class="challenge-num">37.</span> Build a measure that calculates two different iterator-based totals as separate variables, then returns the difference between them.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c38">
+            <label for="ex02-c38"><span class="challenge-num">38.</span> Build a measure using a variable to store the current store's total net sales, then reuse that variable twice later in the same calculation without recalculating it.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c39">
+            <label for="ex02-c39"><span class="challenge-num">39.</span> Using variables, build a measure that returns “Above Average” or “Below Average” by comparing a store's own sales to the company-wide average, calculated only once.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c40">
+            <label for="ex02-c40"><span class="challenge-num">40.</span> Build a measure using a variable to hold a filtered iterator result — the total quantity of only the discounted Sales lines — then divide it by another variable holding total quantity overall.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c41">
+            <label for="ex02-c41"><span class="challenge-num">41.</span> Build a measure using two variables and a final RETURN line that ranks the current context's total sales against every other store, without repeating the ranking logic twice.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Context & lookup functions</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">SELECTEDVALUE, LOOKUPVALUE, CONCATENATEX, HASONEVALUE.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c42">
+            <label for="ex02-c42"><span class="challenge-num">42.</span> Build a text measure for a report title that names the single selected product, or a fallback label when more than one is selected.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c43">
+            <label for="ex02-c43"><span class="challenge-num">43.</span> Build a column on Returns that looks up the region of the customer who originally placed that order, without relying on any relationship already in the model.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c44">
+            <label for="ex02-c44"><span class="challenge-num">44.</span> Build a measure that lists every store currently in filter context as one comma-separated line of text.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c45">
+            <label for="ex02-c45"><span class="challenge-num">45.</span> Build a measure that only shows a result once the report has been narrowed down to exactly one customer.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c46">
+            <label for="ex02-c46"><span class="challenge-num">46.</span> Build a column on Sales that looks up a product's category by matching ProductID directly against the Products table, bypassing the modelled relationship.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c47">
+            <label for="ex02-c47"><span class="challenge-num">47.</span> Build a text measure that lists the names of every promotion active in the currently selected month.</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c48">
+            <label for="ex02-c48"><span class="challenge-num">48.</span> Build a measure that returns the currently selected store's manager name, or blank if more than one store is in context.</label>
+          </div>
+      </div>
+
+      <h3 class="sub-h">Row-level security & “View As”</h3>
+      <p style="margin:0 0 12px 0; font-size:13px; color:var(--muted);">Not DAX functions, but a directly related Power BI modelling skill.</p>
+      <div class="challenge-list">
+        
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c49">
+            <label for="ex02-c49"><span class="challenge-num">49.</span> Design a Row-Level Security role that would restrict a regional manager to seeing only their own region's data across every table in this model — which tables and columns would the filter need to touch?</label>
+          </div>
+          <div class="challenge-item">
+            <input type="checkbox" id="ex02-c50">
+            <label for="ex02-c50"><span class="challenge-num">50.</span> If you built the role above, which Power BI Desktop feature would you use to preview the report exactly as that regional manager would see it, before publishing?</label>
+          </div>
+      </div>
+
+    </section>
+
     <!-- ============ BONUS ============ -->
     <section class="page" id="page-bonus">
       <h1 class="page-title">Bonus DAX playground</h1>
@@ -4862,13 +5127,24 @@ document.querySelectorAll(".challenge-item input[type='checkbox']").forEach(cb =
 
 // Collapsible / expandable navbar -- works both as a mobile overlay drawer
 // (sidebar slides over the content, with a backdrop) and, at desktop widths,
-// as an inline collapse that pushes the content flush left.
+// as an inline collapse that pushes the content flush left. The toggle
+// button is a single arrow that flips direction to match what it will do.
 function isMobileNav(){
   return window.matchMedia("(max-width:900px)").matches;
 }
 function closeMobileDrawer(){
   document.querySelector(".sidebar").classList.remove("open");
   document.querySelector(".sidebar-backdrop").classList.remove("show");
+  updateToggleIcon();
+}
+function updateToggleIcon(){
+  const btn = document.querySelector(".navbar-toggle");
+  const sidebar = document.querySelector(".sidebar");
+  const isOpen = isMobileNav()
+    ? sidebar.classList.contains("open")
+    : !sidebar.classList.contains("collapsed");
+  btn.innerHTML = isOpen ? "&#9664;" : "&#9654;"; // ◀ collapse / ▶ expand
+  btn.setAttribute("aria-label", isOpen ? "Collapse navigation" : "Expand navigation");
 }
 function toggleSidebar(){
   const sidebar = document.querySelector(".sidebar");
@@ -4883,9 +5159,11 @@ function toggleSidebar(){
     sidebar.classList.toggle("collapsed", collapsed);
     main.classList.toggle("sidebar-collapsed", collapsed);
   }
+  updateToggleIcon();
 }
 
 showPage("overview");
+updateToggleIcon();
 </script>
 
 </body>
